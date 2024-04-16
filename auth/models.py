@@ -1,33 +1,37 @@
-from sqlalchemy import Integer, String, TIMESTAMP, ForeignKey, Table, Column, JSON, Boolean
-from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
 from datetime import datetime
 
-from database import metadata, Base
+from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
+from sqlalchemy import MetaData, Integer, String, TIMESTAMP, ForeignKey, Table, Column, JSON, Boolean
+
+from database import Base
+
+metadata = MetaData()
+
 
 role = Table(
     "role",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("name", String(20), nullable=False),
-    Column("permissions", JSON, nullable=True),
+    Column("name", String, nullable=False),
+    Column("permissions", JSON),
 )
 
 user = Table(
     "user",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("email", String(50), nullable=False),
-    Column("username", String(20), nullable=False),
+    Column("email", String, nullable=False),
+    Column("username", String, nullable=False),
     Column("hashed_password", String, nullable=False),
-    Column("registered_on", TIMESTAMP, nullable=False, default=datetime.utcnow),
-    Column("role_id", Integer, ForeignKey("role.c.id"), nullable=False),
-    Column("is_active", Boolean, nullable=False, default=True),
-    Column("is_superuser", Boolean, nullable=False, default=False),
-    Column("is_verifier", Boolean, nullable=False, default=False),
+    Column("registered_at", TIMESTAMP, default=datetime.utcnow),
+    Column("role_id", Integer, ForeignKey(role.c.id)),
+    Column("is_active", Boolean, default=True, nullable=False),
+    Column("is_superuser", Boolean, default=False, nullable=False),
+    Column("is_verified", Boolean, default=False, nullable=False),
 )
 
 
-class User(SQLAlchemyBaseUserTableUUID[int], Base):
+class User(SQLAlchemyBaseUserTable[int], Base):
     id = Column(Integer, primary_key=True)
     email = Column(String, nullable=False)
     username = Column(String, nullable=False)

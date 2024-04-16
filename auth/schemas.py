@@ -8,9 +8,9 @@ class UserRead(schemas.BaseUser[int]):
     id: int
     email: str
     role_id: int
-    is_active: bool
-    is_superuser: bool
-    is_verified: bool
+    is_active: bool = True
+    is_superuser: bool = False
+    is_verified: bool = False
 
 
 class UserCreate(schemas.BaseUserCreate):
