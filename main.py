@@ -1,13 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi_users import FastAPIUsers
 from sqlalchemy.dialects.postgresql import UUID
 
-from auth.config import auth_backend
+from auth.config import auth_backend, current_active_user
 from auth.models import User
-from auth.schemas import UserRead, UserCreate
+from auth.schemas import UserRead, UserCreate, UserUpdate
 from auth.manager import get_user_manager
-
-from database import create_db_and_tables
 
 app = FastAPI(
     title="Запись на игру",
@@ -21,7 +19,7 @@ fastapi_users = FastAPIUsers[User, UUID](
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/jwt",
+    prefix="/auth",
     tags=["auth"],
 )
 
@@ -31,13 +29,25 @@ app.include_router(
     tags=["auth"],
 )
 
+app.include_router(
+    fastapi_users.get_reset_password_router(),
+    prefix="/auth",
+    tags=["auth"],
+)
+
+app.include_router(
+    fastapi_users.get_verify_router(UserRead),
+    prefix="/auth",
+    tags=["auth"],
+)
+
+app.include_router(
+    fastapi_users.get_users_router(UserRead, UserUpdate),
+    prefix="/users",
+    tags=["users"],
+)
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.on_event("startup")
-async def startup():
-    await create_db_and_tables()
+@app.get("/authenticated-route")
+async def authenticated_route(user: User = Depends(current_active_user)):
+    return {"message": f"Hello {user.email}!"}
