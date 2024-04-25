@@ -1,11 +1,39 @@
 from typing import Optional
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, models, schemas
+from celery import Celery
 import smtplib
+from email.message import EmailMessage
 
 from base_config import USER_MANAGER_SECRET
 from auth.models import User
 from auth.utils import get_user_db
+from base_config import SMTP_USER, SMTP_HOST, SMTP_PASS, SMTP_PORT, CELERY_BROKER_URL
+
+celery_app = Celery("auth", broker_url=CELERY_BROKER_URL)
+
+
+def get_email_template_dashboard(username: str, user_email: str, token: str, subject: str):
+    email = EmailMessage()
+    email['Subject'] = subject
+    email['From'] = SMTP_USER
+    email['To'] = user_email
+
+    email.set_content(
+        '<div>'
+        f'<h1 style="color: red;">Здравствуйте, {username}, код подтверждения: {token}</h1>'
+        '</div>',
+        subtype='html'
+    )
+    return email
+
+
+@celery_app.task
+def send_email(username: str, user_email: str, token: str, subject: str):
+    email = get_email_template_dashboard(username, user_email, token, subject)
+    with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
+        server.login(SMTP_USER, SMTP_PASS)
+        server.send_message(email)
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
@@ -45,28 +73,18 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def on_after_request_verify(
             self, user: User, token: str, request: Optional[Request] = None
     ):
-        await send_email(user.email, token)
+        send_email.delay(user.username, user.email, token, "Подтверждение аккаунта")
         print(f"Verification requested for user {user.id}. Verification token: {token}")
 
     async def on_after_forgot_password(
             self, user: User, token: str, request: Optional[Request] = None
     ):
-        await send_email(user.email, token)
+        send_email.delay(user.username, user.email, token, "Восстановление пароля")
         print(f"User {user.id} has forgot their password. Reset token: {token}")
-
-
-async def send_email(email, text):
-    sender = "ToropovDevTochkaProject@yandex.ru"
-    sender_password = "ToropovDevTochkaProjectPass"
-    mail_lib = smtplib.SMTP("smtp.yandex.ru", 465)
-    mail_lib.login(sender, sender_password)
-    msg = 'From: %s\r\nTo: %s\r\nContent-Type: text/plain; charset="utf-8"\r\nSubject: %s\r\n\r\n' % (
-        sender, email, 'Тема сообщения')
-    msg += text
-    mail_lib.sendmail(sender, email, msg.encode('utf-8'))
-    mail_lib.quit()
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)
+
+
 
