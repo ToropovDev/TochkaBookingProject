@@ -5,12 +5,15 @@ from celery import Celery
 import smtplib
 from email.message import EmailMessage
 
-from base_config import USER_MANAGER_SECRET
-from auth.models import User
-from auth.utils import get_user_db
-from base_config import SMTP_USER, SMTP_HOST, SMTP_PASS, SMTP_PORT, CELERY_BROKER_URL
+from src.base_config import USER_MANAGER_SECRET
+from src.auth.models import User
+from src.auth.utils import get_user_db
+from src.base_config import SMTP_USER, SMTP_HOST, SMTP_PASS, SMTP_PORT, CELERY_BROKER_URL
 
 celery_app = Celery("auth", broker_url=CELERY_BROKER_URL)
+'''
+celery -A auth.manager:celery_app worker --loglevel=INFO --pool=solo
+'''
 
 
 def get_email_template_dashboard(username: str, user_email: str, token: str, subject: str):
@@ -85,6 +88,3 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
 
 async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)
-
-
-
