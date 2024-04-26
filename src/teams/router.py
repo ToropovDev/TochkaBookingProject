@@ -33,7 +33,14 @@ async def get_all_teams(session: AsyncSession = Depends(get_async_session)):
 @router.post("/")
 async def add_team(team_create: TeamCreate, session: AsyncSession = Depends(get_async_session)):
     try:
-        stmt = insert(team).values(**team_create.dict())
+        team_create = team_create.dict()
+        for key in team_create.keys():
+            if key == "id":
+                continue
+            if team_create[key] == 0:
+                team_create[key] = None
+
+        stmt = insert(team).values(**team_create)
         await session.execute(stmt)
         await session.commit()
         return {

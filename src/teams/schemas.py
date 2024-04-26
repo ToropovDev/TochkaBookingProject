@@ -2,11 +2,10 @@ from pydantic import BaseModel
 
 
 class TeamCreate(BaseModel):
-    id: int
-    opposite: int
-    outside_1: int
-    outside_2: int
-    setter: int
-    middle_1: int
-    middle_2: int
-    libero: int
+    opposite: None | int
+    outside_1: None | int
+    outside_2: None | int
+    setter: None | int
+    middle_1: None | int
+    middle_2: None | int
+    libero: None | int

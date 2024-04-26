@@ -3,7 +3,6 @@ from pydantic import BaseModel
 
 
 class GameCreate(BaseModel):
-    id: int
     name: str
     place: str
     datetime: dt

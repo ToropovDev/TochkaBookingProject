@@ -14,7 +14,7 @@ game_status = Table(
 game = Table(
     "game",
     metadata,
-    Column("id", Integer, primary_key=True),
+    Column("id", Integer, primary_key=True, autoincrement=True),
     Column("name", String, nullable=False),
     Column("place", String, nullable=False),
     Column("datetime", TIMESTAMP, nullable=False),
@@ -22,5 +22,3 @@ game = Table(
     Column("team_1", Integer, ForeignKey(team.c.id)),
     Column("team_2", Integer, ForeignKey(team.c.id)),
 )
-
-
