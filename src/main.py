@@ -1,8 +1,8 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi_users import FastAPIUsers
 from sqlalchemy.dialects.postgresql import UUID
 
-from src.auth.config import auth_backend, current_active_user
+from src.auth.config import auth_backend
 from src.auth.models import User
 from src.auth.schemas import UserRead, UserCreate, UserUpdate
 from src.auth.manager import get_user_manager
@@ -52,8 +52,3 @@ app.include_router(
 
 app.include_router(teams_router)
 app.include_router(games_router)
-
-
-@app.get("/authenticated-route")
-async def authenticated_route(user: User = Depends(current_active_user)):
-    return {"message": f"Hello {user.email}!"}

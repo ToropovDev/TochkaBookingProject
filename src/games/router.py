@@ -6,6 +6,8 @@ from src.database import get_async_session
 from src.games.models import game
 from src.games.schemas import GameCreate
 from src.teams.models import team, empty_team_dict
+from src.auth.models import User
+from src.auth.config import current_verified_user
 
 router = APIRouter(
     prefix="/games",
@@ -32,7 +34,7 @@ async def get_all_games(status: int = None, session: AsyncSession = Depends(get_
 
 
 @router.post("/")
-async def add_game(game_create: GameCreate, session: AsyncSession = Depends(get_async_session)):
+async def add_game(game_create: GameCreate, user: User = Depends(current_verified_user), session: AsyncSession = Depends(get_async_session)):
     try:
         create_team_stmt = insert(team).values(empty_team_dict)
         if game_create.team_1 == 0 and game_create.team_2 == 0:

@@ -12,7 +12,7 @@ from src.base_config import SMTP_USER, SMTP_HOST, SMTP_PASS, SMTP_PORT, CELERY_B
 
 celery_app = Celery("auth", broker_url=CELERY_BROKER_URL)
 '''
-celery -A auth.manager:celery_app worker --loglevel=INFO --pool=solo
+
 '''
 
 
