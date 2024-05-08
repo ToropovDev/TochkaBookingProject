@@ -39,6 +39,7 @@ async def add_team(team_create: TeamCreate,
                    user: User = Depends(current_verified_user),
                    session: AsyncSession = Depends(get_async_session)) -> dict:
     try:
+        team_create.creator = user.id
         team_create = team_create.dict()
         for key in team_create.keys():
             if key == "id":

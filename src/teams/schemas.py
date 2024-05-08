@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class TeamCreate(BaseModel):
+    creator: int
     opposite: None | int
     outside_1: None | int
     outside_2: None | int

@@ -52,6 +52,7 @@ async def add_game(game_create: GameCreate, user: User = Depends(current_verifie
             game_create.team_2 = team2_id
             await session.commit()
         game_create.datetime = game_create.datetime.replace(tzinfo=None)
+        game_create.creator = user.id
         stmt = insert(game).values(**game_create.dict())
         await session.execute(stmt)
         await session.commit()
