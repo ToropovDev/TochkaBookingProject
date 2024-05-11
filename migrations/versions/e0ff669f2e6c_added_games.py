@@ -27,13 +27,13 @@ def upgrade() -> None:
                     )
     op.create_table('team',
                     sa.Column('id', sa.Integer(), nullable=False),
-                    sa.Column('opposite', sa.String(), nullable=True),
-                    sa.Column('outside_1', sa.String(), nullable=True),
-                    sa.Column('outside_2', sa.String(), nullable=True),
-                    sa.Column('setter', sa.String(), nullable=True),
-                    sa.Column('middle_1', sa.String(), nullable=True),
-                    sa.Column('middle_2', sa.String(), nullable=True),
-                    sa.Column('libero', sa.String(), nullable=True),
+                    sa.Column('opposite', sa.Integer(), nullable=True),
+                    sa.Column('outside_1', sa.Integer(), nullable=True),
+                    sa.Column('outside_2', sa.Integer(), nullable=True),
+                    sa.Column('setter', sa.Integer(), nullable=True),
+                    sa.Column('middle_1', sa.Integer(), nullable=True),
+                    sa.Column('middle_2', sa.Integer(), nullable=True),
+                    sa.Column('libero', sa.Integer(), nullable=True),
                     sa.PrimaryKeyConstraint('id')
                     )
     op.create_table('game',
