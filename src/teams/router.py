@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy import select, insert, update
+from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_async_session
@@ -34,7 +34,8 @@ async def get_all_teams(session: AsyncSession = Depends(get_async_session)) -> d
         }
 
 
-@router.post("/")
+
+@router.patch("/")
 async def add_team(team_create: TeamCreate,
                    user: User = Depends(current_verified_user),
                    session: AsyncSession = Depends(get_async_session)) -> dict:
@@ -48,6 +49,55 @@ async def add_team(team_create: TeamCreate,
                 team_create[key] = None
 
         stmt = insert(team).values(**team_create)
+        await session.execute(stmt)
+        await session.commit()
+        return {
+            "status": "success",
+            "data": None,
+            "details": None
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        }
+
+
+@router.patch("/{team_id}")
+async def update_team(team_id: int,
+                      positions: TeamCreate,
+                      user: User = Depends(current_verified_user),
+                      session: AsyncSession = Depends(get_async_session)) -> dict:
+    positions = positions.dict()
+    new_positions = {}
+    for key in positions.keys():
+        if positions[key] != 0:
+            new_positions[key] = positions[key]
+    try:
+        stmt = (update(team)
+                .where(team.c.id == team_id)
+                .where(team.c.creator == user.id)
+                .values(**new_positions))
+        await session.execute(stmt)
+        await session.commit()
+        return {
+            "status": "success",
+            "data": None,
+            "details": None
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        }
+
+
+@router.delete("/{team_id}")
+async def delete_team(team_id: int, session: AsyncSession = Depends(get_async_session)) -> dict:
+    try:
+        stmt = delete(team).where(team.c.id == team_id)
         await session.execute(stmt)
         await session.commit()
         return {
