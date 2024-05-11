@@ -1,0 +1,62 @@
+{
+  "role_data":
+  [
+    {
+        "id": 0,
+        "name": "admin",
+        "permissions": "all"
+    },
+    {
+        "id": 1,
+        "name": "user",
+        "permissions": null
+    }
+  ],
+  "game_status_data":
+  [
+    {
+        "code": 0,
+        "name": "created",
+        "description": "Создана"
+    },
+    {
+        "code": 1,
+        "name": "open",
+        "description": "Открыта запись"
+    },
+    {
+        "code": 2,
+        "name": "closed",
+        "description": "Закрыта запись"
+    },
+    {
+        "code": 3,
+        "name": "canceled",
+        "description": "Отменена"
+    },
+    {
+        "code": 4,
+        "name": "passed",
+        "description": "Проведена"
+    }
+  ],
+  "game_level_data":
+  [
+    {
+        "code": 0,
+        "name": "easy"
+    },
+    {
+        "code": 1,
+        "name": "medium"
+    },
+    {
+        "code": 2,
+        "name": "hard"
+    },
+    {
+        "code": 3,
+        "name": "expert"
+    }
+  ]
+}

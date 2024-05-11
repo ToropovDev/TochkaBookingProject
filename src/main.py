@@ -9,6 +9,7 @@ from src.auth.manager import get_user_manager
 
 from src.teams.router import router as teams_router
 from src.games.router import router as games_router
+from src.fill_default import router as fill_default_router
 
 app = FastAPI(
     title="Запись на игру",
@@ -52,3 +53,4 @@ app.include_router(
 
 app.include_router(teams_router)
 app.include_router(games_router)
+app.include_router(fill_default_router)
