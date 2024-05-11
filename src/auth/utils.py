@@ -7,4 +7,3 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)) -> SQLAlchemyUserDatabase:
     yield SQLAlchemyUserDatabase(session, User)
-

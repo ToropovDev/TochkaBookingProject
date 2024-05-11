@@ -16,7 +16,10 @@ router = APIRouter(
 
 
 @router.get("/")
-async def get_all_games(status: int = None, session: AsyncSession = Depends(get_async_session)):
+async def get_all_games(
+        status: int = None,
+        session: AsyncSession = Depends(get_async_session)
+) -> dict:
     try:
         query = select(game).where(game.columns.status == status) if status else select(game)
         result = await session.execute(query)
@@ -34,7 +37,11 @@ async def get_all_games(status: int = None, session: AsyncSession = Depends(get_
 
 
 @router.post("/")
-async def add_game(game_create: GameCreate, user: User = Depends(current_verified_user), session: AsyncSession = Depends(get_async_session)):
+async def add_game(
+        game_create: GameCreate,
+        user: User = Depends(current_verified_user),
+        session: AsyncSession = Depends(get_async_session)
+) -> dict:
     try:
         create_team_stmt = insert(team).values(empty_team_dict)
         if game_create.team_1 == 0 and game_create.team_2 == 0:
@@ -68,4 +75,3 @@ async def add_game(game_create: GameCreate, user: User = Depends(current_verifie
             "data": None,
             "details": str(e)
         }
-

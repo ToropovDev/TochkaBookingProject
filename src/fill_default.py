@@ -13,18 +13,18 @@ router = APIRouter(
 )
 
 
-def get_default_data():
+def get_default_data() -> dict:
     with open("default_data.json", "r", encoding="utf-8") as default_data_file:
         default_data = load(default_data_file)
     return default_data
 
 
-async def check_table(table: Table, session: AsyncSession):
+async def check_table(table: Table, session: AsyncSession) -> bool:
     query = await session.execute(select(table).limit(1))
     return not query.fetchone()
 
 
-async def check_tables(session: AsyncSession):
+async def check_tables(session: AsyncSession) -> (bool, bool, bool):
     async with session.begin():
         role_is_empty = await check_table(role, session)
         game_status_is_empty = await check_table(game_status, session)
@@ -32,7 +32,7 @@ async def check_tables(session: AsyncSession):
     return role_is_empty, game_status_is_empty, game_level_is_empty
 
 
-async def fill_table(table: Table, table_data: list, session: AsyncSession):
+async def fill_table(table: Table, table_data: list, session: AsyncSession) -> None:
     for item in table_data:
         stmt = insert(table).values(**item)
         await session.execute(stmt)
@@ -40,7 +40,7 @@ async def fill_table(table: Table, table_data: list, session: AsyncSession):
 
 
 @router.post("/")
-async def fill_default_data(session: AsyncSession = Depends(get_async_session)):
+async def fill_default_data(session: AsyncSession = Depends(get_async_session)) -> None:
     role_is_empty, game_status_is_empty, game_level_is_empty = await check_tables(session)
 
     default_data = get_default_data()

@@ -9,5 +9,3 @@ class GameCreate(BaseModel):
     status: int
     team_1: int
     team_2: int
-
-

@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, models, schemas
 from celery import Celery
-import smtplib
+from smtplib import SMTP_SSL
 from email.message import EmailMessage
 
 from src.base_config import USER_MANAGER_SECRET
@@ -14,7 +14,12 @@ celery_app = Celery("auth", broker_url=CELERY_BROKER_URL)
 # celery -A src.auth.manager:celery_app worker --loglevel=INFO --pool=solo
 
 
-def get_email_template_dashboard(username: str, user_email: str, token: str, subject: str):
+def get_email_template_dashboard(
+        username: str,
+        user_email: str,
+        token: str,
+        subject: str
+) -> EmailMessage:
     email = EmailMessage()
     email['Subject'] = subject
     email['From'] = SMTP_USER
@@ -30,9 +35,14 @@ def get_email_template_dashboard(username: str, user_email: str, token: str, sub
 
 
 @celery_app.task
-def send_email(username: str, user_email: str, token: str, subject: str):
+def send_email(
+        username: str,
+        user_email: str,
+        token: str,
+        subject: str
+) -> None:
     email = get_email_template_dashboard(username, user_email, token, subject)
-    with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
+    with SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
         server.login(SMTP_USER, SMTP_PASS)
         server.send_message(email)
 
@@ -41,7 +51,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     reset_password_token_secret = USER_MANAGER_SECRET
     verification_token_secret = USER_MANAGER_SECRET
 
-    async def on_after_register(self, user: User, request: Optional[Request] = None):
+    async def on_after_register(self, user: User, request: Optional[Request] = None) -> None:
         print(f"User {user.id} has registered.")
 
     async def create(
@@ -72,14 +82,20 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         return created_user
 
     async def on_after_request_verify(
-            self, user: User, token: str, request: Optional[Request] = None
-    ):
+            self,
+            user: User,
+            token: str,
+            request: Optional[Request] = None
+    ) -> None:
         send_email.delay(user.username, user.email, token, "Подтверждение аккаунта")
         print(f"Verification requested for user {user.id}. Verification token: {token}")
 
     async def on_after_forgot_password(
-            self, user: User, token: str, request: Optional[Request] = None
-    ):
+            self,
+            user: User,
+            token: str,
+            request: Optional[Request] = None
+    ) -> None:
         send_email.delay(user.username, user.email, token, "Восстановление пароля")
         print(f"User {user.id} has forgot their password. Reset token: {token}")
 
