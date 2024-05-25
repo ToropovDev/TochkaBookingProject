@@ -3,9 +3,10 @@ from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_async_session
+from src.games.models import game
 from src.teams.schemas import TeamCreate
 from src.teams.models import team
-from src.teams.handlers import position_handler
+from src.teams.handlers import position_handler, update_filled_games
 from src.auth.models import User
 from src.auth.config import current_verified_user
 
@@ -78,6 +79,7 @@ async def update_team(
                 .values(**new_positions))
         await session.execute(stmt)
         await session.commit()
+        await update_filled_games(team_id, session)
         return {
             "status": "success",
             "data": None,
@@ -127,6 +129,7 @@ async def join_team(
                 .values({position: user.id}))
         await session.execute(stmt)
         await session.commit()
+        await update_filled_games(team_id, session)
         return {
             "status": "success",
             "data": None,

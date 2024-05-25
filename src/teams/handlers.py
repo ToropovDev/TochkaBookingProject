@@ -1,3 +1,15 @@
+from fastapi import APIRouter, Depends
+from sqlalchemy import select, insert, update, delete
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.database import get_async_session
+from src.games.models import game
+from src.games.schemas import GameCreate
+from src.teams.models import team, empty_team_dict
+from src.auth.models import User
+from src.auth.config import current_verified_user
+
+
 def position_handler(position: id) -> str:
     match position:
         case 0:
@@ -16,3 +28,54 @@ def position_handler(position: id) -> str:
             return "libero"
         case _:
             raise Exception("Invalid position")
+
+
+async def is_team_fill(
+        team_id: int,
+        session: AsyncSession = Depends(get_async_session)
+) -> bool:
+    try:
+        query = select(team).where(team.c.id == team_id)
+        result = await session.execute(query)
+        data = dict(result.mappings().one())
+        for key, value in data.items():
+            if key != "id" and key != "creator":
+                if value is None:
+                    return False
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
+
+async def get_filled_games(
+        team_id: int,
+        session: AsyncSession = Depends(get_async_session),
+) -> list:
+    try:
+        query = select(game).where(game.c.id == team_id)
+        result = await session.execute(query)
+        games = []
+        data = [dict(row) for row in result.mappings().all()]
+        for row in data:
+            team_1_id = row["team_1"]
+            team_2_id = row["team_2"]
+            if await is_team_fill(team_1_id, session) and await is_team_fill(team_2_id, session):
+                games += [row["id"]]
+        return games
+    except Exception as e:
+        print(e)
+        return []
+
+
+async def update_filled_games(
+        team_id: int,
+        session: AsyncSession = Depends(get_async_session),
+) -> None:
+    filled_games: list[int] = await get_filled_games(team_id)
+    for filled_game in filled_games:
+        stmt = (update(game)
+                .where(game.c.id == filled_game)
+                .values(status=2))
+        await session.execute(stmt)
+        await session.commit()
