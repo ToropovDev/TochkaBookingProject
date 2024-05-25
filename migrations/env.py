@@ -5,10 +5,10 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.base_config import DB_USER, DB_PORT, DB_PASS, DB_NAME, DB_HOST
-from src.auth.models import metadata as auth_metadata
-from src.games.models import metadata as games_metadata
-from src.teams.models import metadata as teams_metadata
+from backend.src.base_config import DB_USER, DB_PORT, DB_PASS, DB_NAME, DB_HOST
+from backend.src.auth.models import metadata as auth_metadata
+from backend.src.games.models import metadata as games_metadata
+from backend.src.teams.models import metadata as teams_metadata
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config

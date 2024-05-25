@@ -1,19 +1,33 @@
 from fastapi import FastAPI
 from fastapi_users import FastAPIUsers
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.dialects.postgresql import UUID
 
-from src.auth.config import auth_backend
-from src.auth.models import User
-from src.auth.schemas import UserRead, UserCreate, UserUpdate
-from src.auth.manager import get_user_manager
+from backend.src.auth.config import auth_backend
+from backend.src.auth.models import User
+from backend.src.auth.schemas import UserRead, UserCreate, UserUpdate
+from backend.src.auth.manager import get_user_manager
 
-from src.teams.router import router as teams_router
-from src.games.router import router as games_router
-from src.fill_default import router as fill_default_router
+from backend.src.teams.router import router as teams_router
+from backend.src.games.router import router as games_router
+from backend.src.fill_default import router as fill_default_router
 
 app = FastAPI(
     title="Запись на игру",
     version="0.1",
+)
+
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 fastapi_users = FastAPIUsers[User, UUID](

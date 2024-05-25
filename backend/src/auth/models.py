@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import MetaData, Integer, String, TIMESTAMP, ForeignKey, Table, Column, JSON, Boolean
 
-from src.database import Base
+from backend.src.database import Base
 
 metadata = MetaData()
 

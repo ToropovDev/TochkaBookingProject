@@ -1,5 +1,5 @@
 from sqlalchemy import MetaData, Integer, Table, Column, ForeignKey
-from src.auth.models import user
+from backend.src.auth.models import user
 
 metadata = MetaData()
 

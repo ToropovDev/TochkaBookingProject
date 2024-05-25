@@ -3,9 +3,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, insert, Table
 from json import load
 
-from src.auth.models import role
-from src.database import get_async_session
-from src.games.models import game_status, game_level
+from backend.src.auth.models import role
+from backend.src.database import get_async_session
+from backend.src.games.models import game_status, game_level
 
 router = APIRouter(
     prefix="/admin/fill_default",

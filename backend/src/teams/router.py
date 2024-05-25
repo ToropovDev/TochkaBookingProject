@@ -2,13 +2,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import get_async_session
-from src.games.models import game
-from src.teams.schemas import TeamCreate
-from src.teams.models import team
-from src.teams.handlers import position_handler, update_filled_games
-from src.auth.models import User
-from src.auth.config import current_verified_user
+from backend.src.database import get_async_session
+from backend.src.teams.schemas import TeamCreate
+from backend.src.teams.models import team
+from backend.src.teams.handlers import position_handler, update_filled_games
+from backend.src.auth.models import User
+from backend.src.auth.config import current_verified_user
 
 router = APIRouter(
     prefix="/teams",

@@ -5,10 +5,10 @@ from celery import Celery
 from smtplib import SMTP_SSL
 from email.message import EmailMessage
 
-from src.base_config import USER_MANAGER_SECRET
-from src.auth.models import User
-from src.auth.utils import get_user_db
-from src.base_config import SMTP_USER, SMTP_HOST, SMTP_PASS, SMTP_PORT, CELERY_BROKER_URL
+from backend.src.base_config import USER_MANAGER_SECRET
+from backend.src.auth.models import User
+from backend.src.auth.utils import get_user_db
+from backend.src.base_config import SMTP_USER, SMTP_HOST, SMTP_PASS, SMTP_PORT, CELERY_BROKER_URL
 
 celery_app = Celery("auth", broker_url=CELERY_BROKER_URL)
 # celery -A src.auth.manager:celery_app worker --loglevel=INFO --pool=solo

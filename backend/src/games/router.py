@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import get_async_session
-from src.games.models import game
-from src.games.schemas import GameCreate
-from src.teams.models import team, empty_team_dict
-from src.auth.models import User
-from src.auth.config import current_verified_user
+from backend.src.database import get_async_session
+from backend.src.games.models import game
+from backend.src.games.schemas import GameCreate
+from backend.src.teams.models import team, empty_team_dict
+from backend.src.auth.models import User
+from backend.src.auth.config import current_verified_user
 
 router = APIRouter(
     prefix="/games",
@@ -17,11 +17,10 @@ router = APIRouter(
 
 @router.get("/")
 async def get_all_games(
-        status: int = None,
         session: AsyncSession = Depends(get_async_session)
 ) -> dict:
     try:
-        query = select(game).where(game.columns.status == status) if status else select(game)
+        query = select(game)
         result = await session.execute(query)
         data = [dict(row) for row in result.mappings().all()]
         return {
