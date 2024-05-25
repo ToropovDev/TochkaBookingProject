@@ -3,9 +3,10 @@ from pydantic import BaseModel
 
 
 class GameCreate(BaseModel):
+    creator: int = 0
     name: str
     place: str
-    datetime: dt
-    status: int
-    team_1: int
-    team_2: int
+    datetime: dt = dt.utcnow()
+    status: int = 0
+    team_1: int = 0
+    team_2: int = 0

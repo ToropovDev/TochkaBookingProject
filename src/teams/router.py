@@ -20,9 +20,10 @@ async def get_all_teams(session: AsyncSession = Depends(get_async_session)) -> d
     try:
         query = select(team)
         result = await session.execute(query)
+        data = [dict(row) for row in result.mappings().all()]
         return {
             "status": "success",
-            "data": result.mappings().all(),
+            "data": data,
             "details": None
         }
     except Exception as e:
@@ -33,21 +34,15 @@ async def get_all_teams(session: AsyncSession = Depends(get_async_session)) -> d
         }
 
 
-@router.patch("/")
+@router.post("/")
 async def add_team(
-        team_create: TeamCreate,
+        team_create: TeamCreate = Depends(TeamCreate),
         user: User = Depends(current_verified_user),
         session: AsyncSession = Depends(get_async_session)
 ) -> dict:
     try:
         team_create.creator = user.id
         team_create = team_create.dict()
-        for key in team_create.keys():
-            if key == "id":
-                continue
-            if team_create[key] == 0:
-                team_create[key] = None
-
         stmt = insert(team).values(**team_create)
         await session.execute(stmt)
         await session.commit()
@@ -127,7 +122,9 @@ async def join_team(
 ) -> dict:
     try:
         position = position_handler(position)
-        stmt = update(team).where(team.c.id == team_id).values({position: user.id})
+        stmt = (update(team)
+                .where(team.c.id == team_id)
+                .values({position: user.id}))
         await session.execute(stmt)
         await session.commit()
         return {
