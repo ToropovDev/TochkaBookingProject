@@ -11,7 +11,7 @@ from backend.src.auth.utils import get_user_db
 from backend.src.base_config import SMTP_USER, SMTP_HOST, SMTP_PASS, SMTP_PORT, CELERY_BROKER_URL
 
 celery_app = Celery("auth", broker_url=CELERY_BROKER_URL)
-# celery -A src.auth.manager:celery_app worker --loglevel=INFO --pool=solo
+# celery -A backend.src.auth.manager:celery_app worker --loglevel=INFO --pool=solo
 
 
 def get_email_template_dashboard(

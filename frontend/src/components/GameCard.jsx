@@ -11,9 +11,9 @@ const GameCard = ({ game }) => {
           width: 300,
         }}
       >
-        <p>{game.id}</p>
-        <p>{game.place}</p>
-        {/* Добавьте другие данные игры, если нужно */}
+        <p>Место: {game.place}</p>
+          <p>Время: {game.datetime}</p>
+          <p></p>
       </Card>
     </div>
   );

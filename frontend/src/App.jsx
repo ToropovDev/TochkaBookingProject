@@ -4,9 +4,10 @@ import { UserOutlined, UnorderedListOutlined, UserAddOutlined } from '@ant-desig
 import { Menu } from 'antd';
 import axios from 'axios';
 import GameCard from './components/GameCard.jsx';
-import UserProfile from './components/UserProfile.jsx'; // Убедитесь, что путь правильный
+import UserProfile from './components/UserProfile.jsx';
 import Register from './pages/Register';
 import VerifyToken from "./pages/VerifyToken.jsx";
+import Home from "./pages/Home.jsx";
 
 const items = [
   {
@@ -28,7 +29,7 @@ const items = [
       },
       {
         key: 'games',
-        label: <Link to="/">Все игры</Link>, // Ведет на главную страницу
+        label: <Link to="/">Все игры</Link>,
         type: 'item',
         icon: <UnorderedListOutlined />,
       },
@@ -79,6 +80,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/users/me" element={<UserProfile/>}/>
             <Route path="/verify-token" element={<VerifyToken/>}/>
+            <Route path="/" element={<Home/>}/>
         </Routes>
       </div>
       <div className='flex flex-wrap'>
