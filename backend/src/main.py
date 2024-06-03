@@ -7,7 +7,7 @@ from backend.src.auth.config import auth_backend
 from backend.src.auth.models import User
 from backend.src.auth.schemas import UserRead, UserCreate, UserUpdate
 from backend.src.auth.manager import get_user_manager
-
+from backend.src.games.scheduler import scheduler
 from backend.src.teams.router import router as teams_router
 from backend.src.games.router import router as games_router
 from backend.src.fill_default import router as fill_default_router
@@ -68,3 +68,9 @@ app.include_router(
 app.include_router(teams_router)
 app.include_router(games_router)
 app.include_router(fill_default_router)
+
+
+@app.on_event("startup")
+async def startup():
+    scheduler.start()
+    print("Scheduler started")

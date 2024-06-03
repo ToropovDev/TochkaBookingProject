@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.src.database import get_async_session
 from backend.src.teams.schemas import TeamCreate
 from backend.src.teams.models import team
-from backend.src.teams.handlers import position_handler, update_filled_games
+from backend.src.teams.handlers import get_position_name, update_filled_games
 from backend.src.auth.models import User
 from backend.src.auth.config import current_verified_user
 
@@ -17,6 +17,10 @@ router = APIRouter(
 
 @router.get("/")
 async def get_all_teams(session: AsyncSession = Depends(get_async_session)) -> dict:
+    return await handle_get_all_teams(session)
+
+
+async def handle_get_all_teams(session: AsyncSession) -> dict:
     try:
         query = select(team)
         result = await session.execute(query)
@@ -36,10 +40,14 @@ async def get_all_teams(session: AsyncSession = Depends(get_async_session)) -> d
 
 @router.post("/")
 async def add_team(
-        team_create: TeamCreate = Depends(TeamCreate),
-        user: User = Depends(current_verified_user),
-        session: AsyncSession = Depends(get_async_session)
+    team_create: TeamCreate = Depends(TeamCreate),
+    user: User = Depends(current_verified_user),
+    session: AsyncSession = Depends(get_async_session)
 ) -> dict:
+    return await handle_add_team(team_create, user, session)
+
+
+async def handle_add_team(team_create: TeamCreate, user: User, session: AsyncSession) -> dict:
     try:
         team_create.creator = user.id
         team_create = team_create.dict()
@@ -61,16 +69,16 @@ async def add_team(
 
 @router.patch("/{team_id}")
 async def update_team(
-        team_id: int,
-        positions: TeamCreate,
-        user: User = Depends(current_verified_user),
-        session: AsyncSession = Depends(get_async_session)
+    team_id: int,
+    positions: TeamCreate,
+    user: User = Depends(current_verified_user),
+    session: AsyncSession = Depends(get_async_session)
 ) -> dict:
-    positions = positions.dict()
-    new_positions = {}
-    for key in positions.keys():
-        if positions[key] != 0:
-            new_positions[key] = positions[key]
+    return await handle_update_team(team_id, positions, user, session)
+
+
+async def handle_update_team(team_id: int, positions: TeamCreate, user: User, session: AsyncSession) -> dict:
+    new_positions = {key: value for key, value in positions.dict().items() if value != 0}
     try:
         stmt = (update(team)
                 .where(team.c.id == team_id)
@@ -94,9 +102,13 @@ async def update_team(
 
 @router.delete("/{team_id}")
 async def delete_team(
-        team_id: int,
-        session: AsyncSession = Depends(get_async_session)
+    team_id: int,
+    session: AsyncSession = Depends(get_async_session)
 ) -> dict:
+    return await handle_delete_team(team_id, session)
+
+
+async def handle_delete_team(team_id: int, session: AsyncSession) -> dict:
     try:
         stmt = delete(team).where(team.c.id == team_id)
         await session.execute(stmt)
@@ -116,16 +128,20 @@ async def delete_team(
 
 @router.post("/join/{team_id}")
 async def join_team(
-        team_id: int,
-        position: int,
-        user: User = Depends(current_verified_user),
-        session: AsyncSession = Depends(get_async_session)
+    team_id: int,
+    position: int,
+    user: User = Depends(current_verified_user),
+    session: AsyncSession = Depends(get_async_session)
 ) -> dict:
+    return await handle_join_team(team_id, position, user, session)
+
+
+async def handle_join_team(team_id: int, position: int, user: User, session: AsyncSession) -> dict:
     try:
-        position = position_handler(position)
+        position_name = get_position_name(position)
         stmt = (update(team)
                 .where(team.c.id == team_id)
-                .values({position: user.id}))
+                .values({position_name: user.id}))
         await session.execute(stmt)
         await session.commit()
         await update_filled_games(team_id, session)

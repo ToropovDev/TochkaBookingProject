@@ -6,6 +6,8 @@ class UserRead(schemas.BaseUser[int]):
     username: str
     id: int
     email: str
+    games_played: int = 0
+    games_organized: int = 0
     role_id: int
     is_active: bool = True
     is_superuser: bool = False
@@ -15,6 +17,8 @@ class UserRead(schemas.BaseUser[int]):
 class UserCreate(schemas.BaseUserCreate):
     username: str
     email: str
+    games_played: int
+    games_organized: int
     password: str
     role_id: int
     is_active: Optional[bool] = True
@@ -25,6 +29,8 @@ class UserCreate(schemas.BaseUserCreate):
 class UserUpdate(schemas.BaseUserUpdate):
     username: str
     email: str
+    games_played: int
+    games_organized: int
     password: str
     role_id: int
     is_active: Optional[bool] = True
