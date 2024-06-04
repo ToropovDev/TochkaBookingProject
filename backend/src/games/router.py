@@ -5,10 +5,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.src.database import get_async_session
 from backend.src.games.models import game
 from backend.src.games.schemas import GameCreate
+from backend.src.scheduler.delayed_update_count import add_game_to_scheduler
+from backend.src.scheduler.notification import add_notification
 from backend.src.teams.models import team, empty_team_dict
 from backend.src.auth.models import User, user
 from backend.src.auth.config import current_verified_user
-from backend.src.games.scheduler import scheduler, update_games_played_count
 
 router = APIRouter(
     prefix="/games",
@@ -45,11 +46,6 @@ async def increment_games_organized(session: AsyncSession, user_id: int) -> None
             .where(user.c.id == user_id)
             .values(games_organized=user.c.games_organized + 1))
     await session.execute(stmt)
-
-
-async def add_game_to_scheduler(game_id: int, session: AsyncSession, game_create: GameCreate) -> None:
-    game_create.datetime = game_create.datetime.replace(tzinfo=None)
-    scheduler.add_job(update_games_played_count, 'date', args=[game_id, session], run_date=game_create.datetime)
 
 
 @router.get("/")
@@ -94,26 +90,29 @@ async def add_game(
         current_user: User = Depends(current_verified_user),
         session: AsyncSession = Depends(get_async_session)
 ) -> dict:
-    try:
-        await add_game_to_team(session, game_create, game_create.team_1)
-        await add_game_to_team(session, game_create, game_create.team_2)
-        stmt = insert(game).values(**game_create.dict())
-        created_game = await session.execute(stmt)
-        await increment_games_organized(session, current_user.id)
-        await session.commit()
-        game_id = created_game.inserted_primary_key[0]
-        await add_game_to_scheduler(game_id, session, game_create)
-        return {
-            "status": "success",
-            "data": None,
-            "details": None
-        }
-    except Exception as e:
-        return {
-            "status": "error",
-            "data": None,
-            "details": str(e)
-        }
+    # try:
+    await add_game_to_team(session, game_create, game_create.team_1)
+    await add_game_to_team(session, game_create, game_create.team_2)
+    stmt = insert(game).values(**game_create.dict())
+    created_game = await session.execute(stmt)
+    await increment_games_organized(session, current_user.id)
+    await session.commit()
+    game_id = created_game.inserted_primary_key[0]
+    await add_game_to_scheduler(game_id, session, game_create)
+    print(0)
+    await add_notification(game_id, session)
+    print(0)
+    return {
+        "status": "success",
+        "data": None,
+        "details": None
+    }
+    # except Exception as e:
+    #     return {
+    #         "status": "error",
+    #         "data": None,
+    #         "details": str(e)
+    #     }
 
 
 @router.patch("/{game_id}")
