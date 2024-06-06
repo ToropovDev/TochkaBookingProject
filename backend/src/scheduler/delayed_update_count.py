@@ -30,6 +30,6 @@ async def update_games_played_count(
     await session.close()
 
 
-async def add_game_to_scheduler(game_id: int, session: AsyncSession, game_create: GameCreate) -> None:
-    game_create.datetime = game_create.datetime.replace(tzinfo=None)
-    scheduler.add_job(update_games_played_count, 'date', args=[game_id, session], run_date=game_create.datetime)
+async def add_game_to_scheduler(game_id: int, session: AsyncSession, game_create: dict) -> None:
+    game_create["datetime"] = game_create["datetime"].replace(tzinfo=None)
+    scheduler.add_job(update_games_played_count, 'date', args=[game_id, session], run_date=game_create["datetime"])

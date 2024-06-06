@@ -32,4 +32,5 @@ game = Table(
     Column("level", Integer, ForeignKey(game_level.c.code)),
     Column("team_1", Integer, ForeignKey(team.c.id)),
     Column("team_2", Integer, ForeignKey(team.c.id)),
+    Column("amount", Integer, nullable=False),
 )

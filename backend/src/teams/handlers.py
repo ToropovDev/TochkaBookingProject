@@ -1,10 +1,12 @@
 from fastapi import Depends
-from sqlalchemy import select, update
+from sqlalchemy import select, update, insert, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from backend.src.auth.models import User
 from backend.src.database import get_async_session
 from backend.src.games.models import game
 from backend.src.teams.models import team
+from backend.src.teams.schemas import TeamCreate
 
 
 def get_position_name(position_id: int) -> str:
@@ -65,3 +67,104 @@ async def update_filled_games(
         stmt = (update(game).where(game.c.id == filled_game).values(status=2))
         await session.execute(stmt)
     await session.commit()
+
+
+async def handle_get_all_teams(session: AsyncSession) -> dict:
+    try:
+        query = select(team)
+        result = await session.execute(query)
+        data = [dict(row) for row in result.mappings().all()]
+        return {
+            "status": "success",
+            "data": data,
+            "details": None
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        }
+
+
+async def handle_add_team(team_create: TeamCreate, user: User, session: AsyncSession) -> dict:
+    try:
+        team_create = team_create.dict()
+        team_create["creator"] = user.id
+        stmt = insert(team).values(**team_create)
+        await session.execute(stmt)
+        await session.commit()
+        return {
+            "status": "success",
+            "data": None,
+            "details": None
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        }
+
+
+async def handle_update_team(team_id: int, positions: TeamCreate, user: User, session: AsyncSession) -> dict:
+    new_positions = {key: value for key, value in positions.dict().items() if value != 0}
+    try:
+        stmt = (update(team)
+                .where(team.c.id == team_id)
+                .where(team.c.creator == user.id)
+                .values(**new_positions))
+        await session.execute(stmt)
+        await session.commit()
+        await update_filled_games(team_id, session)
+        return {
+            "status": "success",
+            "data": None,
+            "details": None
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        }
+
+
+async def handle_delete_team(team_id: int, session: AsyncSession) -> dict:
+    try:
+        stmt = delete(team).where(team.c.id == team_id)
+        await session.execute(stmt)
+        await session.commit()
+        return {
+            "status": "success",
+            "data": None,
+            "details": None
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        }
+
+
+async def handle_join_team(team_id: int, position: int, user: User, session: AsyncSession) -> dict:
+    try:
+        position_name = get_position_name(position)
+        stmt = (update(team)
+                .where(team.c.id == team_id)
+                .values({position_name: user.id}))
+        await session.execute(stmt)
+        await session.commit()
+        await update_filled_games(team_id, session)
+        return {
+            "status": "success",
+            "data": None,
+            "details": None
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        }

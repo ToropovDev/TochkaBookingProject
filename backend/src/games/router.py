@@ -5,47 +5,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.src.database import get_async_session
 from backend.src.games.models import game
 from backend.src.games.schemas import GameCreate
+from backend.src.games.handlers import get_game_by_id, add_game_to_team, increment_games_organized
 from backend.src.scheduler.delayed_update_count import add_game_to_scheduler
 from backend.src.scheduler.notification import add_notification
-from backend.src.teams.models import team, empty_team_dict
-from backend.src.auth.models import User, user
+from backend.src.auth.models import User
 from backend.src.auth.config import current_verified_user
+from backend.src.payments.payments import create_payment
 
 router = APIRouter(
     prefix="/games",
     tags=["games"],
 )
-
-
-async def get_game_by_id(session: AsyncSession, game_id: int) -> dict:
-    query = select(game).where(game.c.id == game_id)
-    result = await session.execute(query)
-    return dict(result.mappings().one())
-
-
-async def create_team(session: AsyncSession, creator_id: int) -> int:
-    new_team = empty_team_dict
-    new_team['creator'] = creator_id
-    create_team_stmt = insert(team).values(new_team)
-    team_id = (await session.execute(create_team_stmt)).inserted_primary_key_rows[0][0]
-    return team_id
-
-
-async def add_game_to_team(session: AsyncSession, game_create: GameCreate, team_id: int) -> None:
-    if team_id != 0:
-        return
-    team_id = await create_team(session, game_create.creator)
-    if game_create.team_1 == 0:
-        game_create.team_1 = team_id
-    elif game_create.team_2 == 0:
-        game_create.team_2 = team_id
-
-
-async def increment_games_organized(session: AsyncSession, user_id: int) -> None:
-    stmt = (update(user)
-            .where(user.c.id == user_id)
-            .values(games_organized=user.c.games_organized + 1))
-    await session.execute(stmt)
 
 
 @router.get("/")
@@ -90,29 +60,44 @@ async def add_game(
         current_user: User = Depends(current_verified_user),
         session: AsyncSession = Depends(get_async_session)
 ) -> dict:
-    # try:
-    await add_game_to_team(session, game_create, game_create.team_1)
-    await add_game_to_team(session, game_create, game_create.team_2)
-    stmt = insert(game).values(**game_create.dict())
-    created_game = await session.execute(stmt)
-    await increment_games_organized(session, current_user.id)
-    await session.commit()
-    game_id = created_game.inserted_primary_key[0]
-    await add_game_to_scheduler(game_id, session, game_create)
-    print(0)
-    await add_notification(game_id, session)
-    print(0)
-    return {
-        "status": "success",
-        "data": None,
-        "details": None
-    }
-    # except Exception as e:
-    #     return {
-    #         "status": "error",
-    #         "data": None,
-    #         "details": str(e)
-    #     }
+    try:
+        await add_game_to_team(session, game_create, game_create.team_1, current_user.id)
+        await add_game_to_team(session, game_create, game_create.team_2, current_user.id)
+        game_create = game_create.dict()
+        game_create["creator"] = current_user.id
+        stmt = insert(game).values(**game_create)
+        created_game = await session.execute(stmt)
+        await increment_games_organized(session, current_user.id)
+        await session.commit()
+        game_id = created_game.inserted_primary_key[0]
+        await add_game_to_scheduler(game_id, session, game_create)
+        await add_notification(game_id, session)
+
+        payment = {}
+        if game_create["amount"] != 0:
+            payment = create_payment(game_create["amount"], game_create["name"])
+
+        return {
+            "status": "success",
+            "data": payment,
+            "details": None
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        }
+
+
+@router.get("/{game_id}/check_payment")
+async def get_check_payment(
+        game_id: int,
+        payment_id: str,
+        user: User = Depends(current_verified_user),
+        session: AsyncSession = Depends(get_async_session)
+) -> dict:
+    ...
 
 
 @router.patch("/{game_id}")
