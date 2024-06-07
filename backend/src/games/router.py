@@ -11,6 +11,7 @@ from backend.src.games.schemas import GameCreate
 from backend.src.payments.payments import create_payment, check_payment
 from backend.src.scheduler.delayed_update_count import add_game_to_scheduler
 from backend.src.scheduler.notification import add_notification
+from backend.src.scheduler.clr import send_ics_file
 
 router = APIRouter(
     prefix="/games",
@@ -72,6 +73,13 @@ async def add_game(
         game_id = created_game.inserted_primary_key[0]
         await add_game_to_scheduler(game_id, session, game_create)
         await add_notification(game_id, session)
+
+        send_ics_file.delay(
+            current_user.username,
+            current_user.email,
+            "Добавьте предстоящую игру в календарь",
+            game_create
+        )
 
         payment = {}
         if game_create["amount"] != 0:
