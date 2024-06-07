@@ -2,15 +2,15 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from backend.src.auth.config import current_verified_user
+from backend.src.auth.models import User
 from backend.src.database import get_async_session
+from backend.src.games.handlers import get_game_by_id, add_game_to_team, increment_games_organized
 from backend.src.games.models import game
 from backend.src.games.schemas import GameCreate
-from backend.src.games.handlers import get_game_by_id, add_game_to_team, increment_games_organized
+from backend.src.payments.payments import create_payment, check_payment
 from backend.src.scheduler.delayed_update_count import add_game_to_scheduler
 from backend.src.scheduler.notification import add_notification
-from backend.src.auth.models import User
-from backend.src.auth.config import current_verified_user
-from backend.src.payments.payments import create_payment
 
 router = APIRouter(
     prefix="/games",
@@ -75,8 +75,14 @@ async def add_game(
 
         payment = {}
         if game_create["amount"] != 0:
-            payment = create_payment(game_create["amount"], game_create["name"])
-
+            print(0)
+            payment = await create_payment(
+                game_create["amount"],
+                game_create["name"],
+                current_user.id,
+                game_id,
+                session,
+            )
         return {
             "status": "success",
             "data": payment,
@@ -90,14 +96,30 @@ async def add_game(
         }
 
 
-@router.get("/{game_id}/check_payment")
-async def get_check_payment(
-        game_id: int,
+@router.patch("/check_payment_by_id")
+async def check_payment_patch(
         payment_id: str,
         user: User = Depends(current_verified_user),
         session: AsyncSession = Depends(get_async_session)
 ) -> dict:
-    ...
+    is_not_pending, payment = await check_payment(payment_id, session)
+    if is_not_pending:
+        return {
+            "status": "success",
+            "data": {
+                "payment_status": payment["status"],
+                "captured_at": payment["captured_at"],
+            },
+            "details": None
+        }
+    else:
+        return {
+            "status": "success",
+            "data": {
+                "payment_status": payment["status"],
+            },
+            "details": None
+        }
 
 
 @router.patch("/{game_id}")
