@@ -57,7 +57,7 @@ const GameDetailsModal = ({visible, game, team1, team2, user1, user2, onClose}) 
 
     return (
         <Modal
-            {/* eslint-disable-next-line react/prop-types */}
+            /* eslint-disable-next-line react/prop-types */
             title={game && game.name}
             visible={visible}
             onCancel={onClose}
