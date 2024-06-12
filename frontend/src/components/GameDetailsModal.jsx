@@ -4,7 +4,6 @@ import axios from 'axios';
 
 const {Option} = Select;
 
-
 const positions = [
     {key: 0, label: 'Диагональный'},
     {key: 1, label: 'Доигровщик 1'},
@@ -32,6 +31,7 @@ function formatTime(isoString) {
     return `${hours}:${minutes}`;
 }
 
+// eslint-disable-next-line react/prop-types
 const GameDetailsModal = ({visible, game, team1, team2, user1, user2, onClose}) => {
     const [isJoinFormVisible, setJoinFormVisible] = useState(false);
     const [selectedTeamId, setSelectedTeamId] = useState(null);
@@ -57,6 +57,7 @@ const GameDetailsModal = ({visible, game, team1, team2, user1, user2, onClose}) 
 
     return (
         <Modal
+            {/* eslint-disable-next-line react/prop-types */}
             title={game && game.name}
             visible={visible}
             onCancel={onClose}

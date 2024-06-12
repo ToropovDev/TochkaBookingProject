@@ -4,7 +4,6 @@ import axios from 'axios';
 import {HomeOutlined, LogoutOutlined, RightCircleOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
 import {Link, useNavigate} from "react-router-dom";
 import GameDetailsModal from "./GameDetailsModal.jsx";
-import moment  from 'moment';
 
 const {Content, Footer, Sider} = Layout;
 const {Option} = Select;
@@ -71,7 +70,7 @@ const MyGames = () => {
     useEffect(() => {
 
 
-    const fetchTeams = async () => {
+        const fetchTeams = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/teams');
                 setTeams(response.data.data);
@@ -186,27 +185,27 @@ const MyGames = () => {
         const params = new URLSearchParams({
             name: values.name,
             place: values.place,
-            datetime: datetimeISO ? datetimeISO  :  null,
-            status: values.status ?  values.status  :  0,
-            level: values.level ?  values.level   :  0,
-            team_1: values.team_1 ?  values.team_1   :  0,
-            team_2: values.team_2 ?  values.team_2    :  0,
-            amount: values.amount ?  values.amount    :  0,
+            datetime: datetimeISO ? datetimeISO : null,
+            status: values.status ? values.status : 0,
+            level: values.level ? values.level : 0,
+            team_1: values.team_1 ? values.team_1 : 0,
+            team_2: values.team_2 ? values.team_2 : 0,
+            amount: values.amount ? values.amount : 0,
         });
         try {
-        await axios.patch(`http://localhost:8000/games/${game_to_edit}/?${params.toString()}`,{}, {
-            headers: {
-                "accept": "application/json",
-            },
-            withCredentials: true,
-        });
-        message.success('Данные игры успешно обновлены!');
-        // Дополнительные действия, если необходимо
-    } catch (error) {
-        message.error('Не удалось обновить данные игры.');
-        console.error('Error:', error);
-    }
-};
+            await axios.patch(`http://localhost:8000/games/${game_to_edit}/?${params.toString()}`, {}, {
+                headers: {
+                    "accept": "application/json",
+                },
+                withCredentials: true,
+            });
+            message.success('Данные игры успешно обновлены!');
+            // Дополнительные действия, если необходимо
+        } catch (error) {
+            message.error('Не удалось обновить данные игры.');
+            console.error('Error:', error);
+        }
+    };
 
     const handleAddGameSubmit = async (values) => {
         const datetimeISO = new Date(values.datetime).toISOString().slice(0, -1); // Преобразуем дату в объект Date
@@ -318,203 +317,203 @@ const MyGames = () => {
                                 ]}
                             >
                                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                <div>
-                                <p><b>Место:</b> {game.place}</p>
-                                <p><b>Дата:</b> {formatDate(game.datetime)} {formatTime(game.datetime)}</p>
-                                </div>
-                                    <div style={{alignSelf: 'flex-end'}}>
-                                    <Button type="primary" onClick={() => openModal(game.id)}>
-                                        Подробнее
-                                    </Button>
-                                </div>
+                                    <div>
+                                        <p><b>Место:</b> {game.place}</p>
+                                        <p><b>Дата:</b> {formatDate(game.datetime)} {formatTime(game.datetime)}</p>
                                     </div>
+                                    <div style={{alignSelf: 'flex-end'}}>
+                                        <Button type="primary" onClick={() => openModal(game.id)}>
+                                            Подробнее
+                                        </Button>
+                                    </div>
+                                </div>
                             </Card>
                         ))}
                         <GameDetailsModal
-                visible={modalVisible}
-                game={selectedGame}
-                team1={team1}
-                team2={team2}
-                user1={user1}
-                user2={user2}
-                onClose={closeModal}
-            />
+                            visible={modalVisible}
+                            game={selectedGame}
+                            team1={team1}
+                            team2={team2}
+                            user1={user1}
+                            user2={user2}
+                            onClose={closeModal}
+                        />
                     </div>
                     <Modal
-                title="Изменить игру"
-                open={isModalVisible}
-                onCancel={handleCancel}
-                footer={null}
-            >
-                <Form
-                    form={form}
-                    onFinish={handleUpdateGame}
-                >
-                    <Form.Item
-                        label="Название"
-                        name="name"
-                        rules={[{required: true, message: 'Введите название игры'}]}
+                        title="Изменить игру"
+                        open={isModalVisible}
+                        onCancel={handleCancel}
+                        footer={null}
                     >
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item
-                        label="Место"
-                        name="place"
-                        rules={[{required: true, message: 'Введите место проведения'}]}
-                    >
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item
-                        label="Дата и время"
-                        name="datetime"
-                        rules={[{ message: 'Выберите дату и время'}]}
-                    >
-                        <DatePicker showTime/>
-                    </Form.Item>
-                    <Form.Item
-                        label="Статус"
-                        name="status"
-                        rules={[{ message: 'Выберите статус'}]}
-                    >
-                        <Select>
-                            <Option value={1}>Статус 1</Option>
-                            <Option value={2}>Статус 2</Option>
-                            <Option value={3}>Статус 3</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="Уровень"
-                        name="level"
-                        rules={[{ message: 'Выберите уровень'}]}
-                    >
-                        <Select>
-                            <Option value={1}>Уровень 1</Option>
-                            <Option value={2}>Уровень 2</Option>
-                            <Option value={3}>Уровень 3</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="Команда 1"
-                        name="team_1"
-                        rules={[{ message: 'Выберите команду 1'}]}
-                    >
-                        <Select>
-                            {teams.map(team => (
-                                <Option key={team.id} value={team.id}>{team.name}</Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="Команда 2"
-                        name="team_2"
-                        rules={[{ message: 'Выберите команду 2'}]}
-                    >
-                        <Select>
-                            {teams.map(team => (
-                                <Option key={team.id} value={team.id}>{team.name}</Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="Задонатить автору"
-                        name="amount"
-                        rules={[{ message: 'Введите стоимость'}]}
-                    >
-                        <Input type="number" min={0} max={1000}/>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">Изменить</Button>
-                    </Form.Item>
-                </Form>
-            </Modal>
+                        <Form
+                            form={form}
+                            onFinish={handleUpdateGame}
+                        >
+                            <Form.Item
+                                label="Название"
+                                name="name"
+                                rules={[{required: true, message: 'Введите название игры'}]}
+                            >
+                                <Input/>
+                            </Form.Item>
+                            <Form.Item
+                                label="Место"
+                                name="place"
+                                rules={[{required: true, message: 'Введите место проведения'}]}
+                            >
+                                <Input/>
+                            </Form.Item>
+                            <Form.Item
+                                label="Дата и время"
+                                name="datetime"
+                                rules={[{message: 'Выберите дату и время'}]}
+                            >
+                                <DatePicker showTime/>
+                            </Form.Item>
+                            <Form.Item
+                                label="Статус"
+                                name="status"
+                                rules={[{message: 'Выберите статус'}]}
+                            >
+                                <Select>
+                                    <Option value={1}>Статус 1</Option>
+                                    <Option value={2}>Статус 2</Option>
+                                    <Option value={3}>Статус 3</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Уровень"
+                                name="level"
+                                rules={[{message: 'Выберите уровень'}]}
+                            >
+                                <Select>
+                                    <Option value={1}>Уровень 1</Option>
+                                    <Option value={2}>Уровень 2</Option>
+                                    <Option value={3}>Уровень 3</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Команда 1"
+                                name="team_1"
+                                rules={[{message: 'Выберите команду 1'}]}
+                            >
+                                <Select>
+                                    {teams.map(team => (
+                                        <Option key={team.id} value={team.id}>{team.name}</Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Команда 2"
+                                name="team_2"
+                                rules={[{message: 'Выберите команду 2'}]}
+                            >
+                                <Select>
+                                    {teams.map(team => (
+                                        <Option key={team.id} value={team.id}>{team.name}</Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Задонатить автору"
+                                name="amount"
+                                rules={[{message: 'Введите стоимость'}]}
+                            >
+                                <Input type="number" min={0} max={1000}/>
+                            </Form.Item>
+                            <Form.Item>
+                                <Button type="primary" htmlType="submit">Изменить</Button>
+                            </Form.Item>
+                        </Form>
+                    </Modal>
                     <Modal
                         title="Добавить игру"
                         open={addGameModalVisible}
                         onCancel={() => setAddGameModalVisible(false)}
                         footer={null}
-            >
-                <Form onFinish={handleAddGameSubmit}>
-                    <Form.Item
-                        label="Название"
-                        name="name"
-                        rules={[{required: true, message: 'Введите название игры'}]}
                     >
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item
-                        label="Место"
-                        name="place"
-                        rules={[{required: true, message: 'Введите место проведения'}]}
-                    >
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item
-                        label="Дата и время"
-                        name="datetime"
-                        rules={[{required: true, message: 'Выберите дату и время'}]}
-                    >
-                        <DatePicker showTime/>
-                    </Form.Item>
-                    <Form.Item
-                        label="Статус"
-                        name="status"
-                        rules={[{required: true, message: 'Выберите статус'}]}
-                    >
-                        <Select>
-                            <Option value={1}>Статус 1</Option>
-                            <Option value={2}>Статус 2</Option>
-                            <Option value={3}>Статус 3</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="Уровень"
-                        name="level"
-                        rules={[{required: true, message: 'Выберите уровень'}]}
-                    >
-                        <Select>
-                            <Option value={1}>Уровень 1</Option>
-                            <Option value={2}>Уровень 2</Option>
-                            <Option value={3}>Уровень 3</Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="Команда 1"
-                        name="team_1"
-                        rules={[{required: true, message: 'Выберите команду 1'}]}
-                    >
-                        <Select>
-                            {teams.map(team => (
-                                <Option key={team.id} value={team.id}>{team.name}</Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="Команда 2"
-                        name="team_2"
-                        rules={[{required: true, message: 'Выберите команду 2'}]}
-                    >
-                        <Select>
-                            {teams.map(team => (
-                                <Option key={team.id} value={team.id}>{team.name}</Option>
-                            ))}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        label="Задонатить автору"
-                        name="amount"
-                        rules={[{required: true, message: 'Введите стоимость'}]}
-                    >
-                        <Input type="number" min={0} max={1000}/>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">Добавить</Button>
-                    </Form.Item>
-                </Form>
-            </Modal>
-            <Button style= {{
-                marginTop: 10,
-            }}
-                    type="primary" onClick={handleAddGame}>Добавить игру</Button>
+                        <Form onFinish={handleAddGameSubmit}>
+                            <Form.Item
+                                label="Название"
+                                name="name"
+                                rules={[{required: true, message: 'Введите название игры'}]}
+                            >
+                                <Input/>
+                            </Form.Item>
+                            <Form.Item
+                                label="Место"
+                                name="place"
+                                rules={[{required: true, message: 'Введите место проведения'}]}
+                            >
+                                <Input/>
+                            </Form.Item>
+                            <Form.Item
+                                label="Дата и время"
+                                name="datetime"
+                                rules={[{required: true, message: 'Выберите дату и время'}]}
+                            >
+                                <DatePicker showTime/>
+                            </Form.Item>
+                            <Form.Item
+                                label="Статус"
+                                name="status"
+                                rules={[{required: true, message: 'Выберите статус'}]}
+                            >
+                                <Select>
+                                    <Option value={1}>Статус 1</Option>
+                                    <Option value={2}>Статус 2</Option>
+                                    <Option value={3}>Статус 3</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Уровень"
+                                name="level"
+                                rules={[{required: true, message: 'Выберите уровень'}]}
+                            >
+                                <Select>
+                                    <Option value={1}>Уровень 1</Option>
+                                    <Option value={2}>Уровень 2</Option>
+                                    <Option value={3}>Уровень 3</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Команда 1"
+                                name="team_1"
+                                rules={[{required: true, message: 'Выберите команду 1'}]}
+                            >
+                                <Select>
+                                    {teams.map(team => (
+                                        <Option key={team.id} value={team.id}>{team.name}</Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Команда 2"
+                                name="team_2"
+                                rules={[{required: true, message: 'Выберите команду 2'}]}
+                            >
+                                <Select>
+                                    {teams.map(team => (
+                                        <Option key={team.id} value={team.id}>{team.name}</Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                label="Задонатить автору"
+                                name="amount"
+                                rules={[{required: true, message: 'Введите стоимость'}]}
+                            >
+                                <Input type="number" min={0} max={1000}/>
+                            </Form.Item>
+                            <Form.Item>
+                                <Button type="primary" htmlType="submit">Добавить</Button>
+                            </Form.Item>
+                        </Form>
+                    </Modal>
+                    <Button style={{
+                        marginTop: 10,
+                    }}
+                            type="primary" onClick={handleAddGame}>Добавить игру</Button>
 
                 </Content>
                 <Footer

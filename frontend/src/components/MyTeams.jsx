@@ -62,10 +62,6 @@ const MyTeams = () => {
         setIsEditModalVisible(true);
     };
 
-    const handleUpdate = () => {
-        fetchTeams();
-    };
-
 
     const handleCreateTeam = async (values) => {
         try {
@@ -177,7 +173,6 @@ const MyTeams = () => {
                                 visible={isEditModalVisible}
                                 team={editTeam}
                                 onClose={() => setIsEditModalVisible(false)}
-                                onUpdate={handleUpdate}
                             />
                         )}
                         <Button type="primary" onClick={showModal}>Создать команду</Button>

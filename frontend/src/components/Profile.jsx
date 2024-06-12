@@ -135,7 +135,7 @@ const Profile = () => {
                         padding: 24,
                         minHeight: 360,
                         borderRadius: borderRadiusLG,
-                       marginTop: 20
+                        marginTop: 20
                     }}
                 >
                     <h1 style={{

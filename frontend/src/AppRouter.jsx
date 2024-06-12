@@ -8,18 +8,19 @@ import Profile from './components/Profile.jsx';
 import UserProfile from "./components/UserProfile.jsx";
 import MyTeams from "./components/MyTeams.jsx";
 import MyGames from "./components/MyGames.jsx";
+import Home from "./components/Home.jsx";
 
 const AppRouter = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Login/>}/>
+                <Route path="/" element={<Home/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/input-token" element={<InputToken/>}/>
                 <Route path="/games" element={<Games/>}/>
                 <Route path="/profile" element={<Profile/>}/>
-                <Route path="/my-teams" element={<MyTeams />} />
-                <Route path="/my-games" element={<MyGames />} />
+                <Route path="/my-teams" element={<MyTeams/>}/>
+                <Route path="/my-games" element={<MyGames/>}/>
                 <Route path="/users/:userId" element={<UserProfile/>}/>
                 <Route path="/games/:gameId" component={GameDetails}/>
 

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Button, message } from 'antd';
+import React, {useEffect} from 'react';
+import {Button, Form, Input, message, Modal} from 'antd';
 import axios from 'axios';
 
-const EditTeamModal = ({ visible, team, onClose, onUpdate }) => {
+// eslint-disable-next-line react/prop-types
+const EditTeamModal = ({visible, team, onClose}) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -21,6 +22,7 @@ const EditTeamModal = ({ visible, team, onClose, onUpdate }) => {
 
     const handleSubmit = async (values) => {
         try {
+            // eslint-disable-next-line react/prop-types
             await axios.patch(`http://localhost:8000/teams/${team.id}`, values, {
                 withCredentials: true,
             });
@@ -40,25 +42,25 @@ const EditTeamModal = ({ visible, team, onClose, onUpdate }) => {
         >
             <Form form={form} onFinish={handleSubmit}>
                 <Form.Item name="opposite" label="Диагональный">
-                    <Input />
+                    <Input/>
                 </Form.Item>
                 <Form.Item name="outside_1" label="Доигровщик 1">
-                    <Input />
+                    <Input/>
                 </Form.Item>
                 <Form.Item name="outside_2" label="Доигровщик 2">
-                    <Input />
+                    <Input/>
                 </Form.Item>
                 <Form.Item name="setter" label="Связующий">
-                    <Input />
+                    <Input/>
                 </Form.Item>
                 <Form.Item name="middle_1" label="Центральный 1">
-                    <Input />
+                    <Input/>
                 </Form.Item>
                 <Form.Item name="middle_2" label="Центральный 2">
-                    <Input />
+                    <Input/>
                 </Form.Item>
                 <Form.Item name="libero" label="Либеро">
-                    <Input />
+                    <Input/>
                 </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit">Сохранить</Button>

@@ -74,7 +74,8 @@ const Login = () => {
         <div style={styles.formContainer}>
             <div style={styles.tabButtons}>
                 <Button type={isLogin ? 'primary' : 'default'} onClick={() => setIsLogin(true)}>Войти</Button>
-                <Button type={!isLogin ? 'primary' : 'default'} onClick={() => setIsLogin(false)}>Зарегистрироваться</Button>
+                <Button type={!isLogin ? 'primary' : 'default'}
+                        onClick={() => setIsLogin(false)}>Зарегистрироваться</Button>
             </div>
 
             <Form

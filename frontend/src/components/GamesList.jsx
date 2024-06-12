@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Button, Card, DatePicker, Form, Input, message, Modal, Select, Space} from 'antd';
 import axios from 'axios';
 import GameDetailsModal from './GameDetailsModal';
-import {useNavigate} from 'react-router-dom';
 
 const {Option} = Select;
 
@@ -33,7 +32,6 @@ const GamesList = () => {
     const [user2, setUser2] = useState(null);
     const [addGameModalVisible, setAddGameModalVisible] = useState(false);
     const [teams, setTeams] = useState([]);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchGames = async () => {
@@ -188,8 +186,8 @@ const GamesList = () => {
 
             {games.map((game) => (
                 <Card key={game.id}
-                                title={game.name}
-                                style={{width: 300}}>
+                      title={game.name}
+                      style={{width: 300}}>
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
                         <div>
                             <p style={{fontSize: 12}}>
