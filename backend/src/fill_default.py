@@ -14,7 +14,7 @@ router = APIRouter(
 
 
 def get_default_data() -> dict:
-    with open("default_data.json", "r", encoding="utf-8") as default_data_file:
+    with open("backend/default_data.json", "r", encoding="utf-8") as default_data_file:
         default_data = load(default_data_file)
     return default_data
 
