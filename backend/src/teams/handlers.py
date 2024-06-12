@@ -26,7 +26,7 @@ def get_position_name(position_id: int) -> str:
 
 
 async def is_team_filled(
-        team_id: int, 
+        team_id: int,
         session: AsyncSession = Depends(get_async_session)
 ) -> bool:
     try:
@@ -40,7 +40,7 @@ async def is_team_filled(
 
 
 async def get_filled_games(
-        team_id: int, 
+        team_id: int,
         session: AsyncSession = Depends(get_async_session)
 ) -> list:
     try:
@@ -58,7 +58,7 @@ async def get_filled_games(
 
 
 async def update_filled_games(
-        team_id: int, 
+        team_id: int,
         session: AsyncSession = Depends(get_async_session)
 ) -> None:
     filled_games = await get_filled_games(team_id)
@@ -85,6 +85,30 @@ async def handle_get_all_teams(session: AsyncSession) -> dict:
             "data": None,
             "details": str(e)
         }
+
+
+async def handle_get_my_teams(creator_id: int, session: AsyncSession) -> dict:
+    try:
+        query = select(team).where(team.c.creator == creator_id)
+        result = await session.execute(query)
+        data = [dict(row) for row in result.mappings().all()]
+        return {
+            "status": "success",
+            "data": data,
+            "details": None
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        }
+
+
+async def handle_get_team(team_id: int, session: AsyncSession) -> dict:
+    query = select(team).where(team.c.id == team_id)
+    result = await session.execute(query)
+    return dict(result.mappings().one())
 
 
 async def handle_add_team(team_create: TeamCreate, user: User, session: AsyncSession) -> dict:

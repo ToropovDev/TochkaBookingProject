@@ -38,6 +38,26 @@ async def get_all_games(session: AsyncSession = Depends(get_async_session)) -> d
         }
 
 
+@router.get("/my/")
+async def get_my_games(user: User = Depends(current_verified_user),
+                       session: AsyncSession = Depends(get_async_session)) -> dict:
+    try:
+        query = select(game).where(game.c.creator == user.id)
+        result = await session.execute(query)
+        data = [dict(row) for row in result.mappings().all()]
+        return {
+            "status": "success",
+            "data": data,
+            "details": None
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "data": None,
+            "details": str(e)
+        }
+
+
 @router.get("/{game_id}")
 async def get_game(
         game_id: int,

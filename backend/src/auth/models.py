@@ -1,11 +1,11 @@
 from datetime import datetime
+
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import MetaData, Integer, String, TIMESTAMP, ForeignKey, Table, Column, JSON, Boolean
 
 from backend.src.database import Base
 
 metadata = MetaData()
-
 
 role = Table(
     "role",
@@ -36,7 +36,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     id = Column(Integer, primary_key=True)
     email = Column(String, nullable=False)
     username = Column(String, nullable=False)
-    games_played  = Column(Integer, nullable=True)
+    games_played = Column(Integer, nullable=True)
     games_organized = Column(Integer, nullable=True)
     registered_at = Column(TIMESTAMP, default=datetime.utcnow)
     role_id = Column(Integer, ForeignKey(role.c.id))

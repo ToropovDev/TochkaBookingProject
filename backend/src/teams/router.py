@@ -6,7 +6,7 @@ from backend.src.teams.schemas import TeamCreate
 from backend.src.auth.models import User
 from backend.src.auth.config import current_verified_user
 from backend.src.teams.handlers import handle_get_all_teams, handle_add_team, handle_update_team, handle_delete_team, \
-    handle_join_team
+    handle_join_team, handle_get_team, handle_get_my_teams
 
 router = APIRouter(
     prefix="/teams",
@@ -17,6 +17,29 @@ router = APIRouter(
 @router.get("/")
 async def get_all_teams(session: AsyncSession = Depends(get_async_session)) -> dict:
     return await handle_get_all_teams(session)
+
+
+@router.get("/{team_id}")
+async def get_team(
+        team_id: int,
+        user: User = Depends(current_verified_user),
+        session: AsyncSession = Depends(get_async_session)
+) -> dict:
+    try:
+        current_game = await handle_get_team(team_id, session)
+        return {
+            "status": "success",
+            "data": current_game,
+            "details": None
+        }
+    except Exception as e:
+        return {"status": "error", "data": None, "details": str(e)}
+
+
+@router.get("/my/")
+async def get_my_teams(user: User = Depends(current_verified_user),
+                       session: AsyncSession = Depends(get_async_session)) -> dict:
+    return await handle_get_my_teams(user.id, session)
 
 
 @router.post("/")
