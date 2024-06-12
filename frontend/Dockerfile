@@ -1,11 +1,11 @@
-FROM node:22
+FROM node:18-alpine
 
 WORKDIR /TochkaBookingProject
 
-COPY frontend/package*.json ./
-
-RUN npm install
-
 COPY frontend/ .
 
-CMD ["npm", "run", "dev"]
+RUN npm install
+RUN npm install serve -g
+
+CMD ["serve", "-s", "dist"]
+

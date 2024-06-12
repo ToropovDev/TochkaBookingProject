@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 WORKDIR /TochkaBookingProject
 
@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY backend/ .
 
-CMD ["sh", "-c", "alembic upgrade head && uvicorn src.main:app --host 127.0.0.1 --port 8000"]
+CMD ["sh", "-c", "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port 8000"]
