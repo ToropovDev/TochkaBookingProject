@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.database import get_async_session
-from backend.src.teams.schemas import TeamCreate
-from backend.src.auth.models import User
-from backend.src.auth.config import current_verified_user
-from backend.src.teams.handlers import handle_get_all_teams, handle_add_team, handle_update_team, handle_delete_team, \
+from src.database import get_async_session
+from src.teams.schemas import TeamCreate
+from src.auth.models import User
+from src.auth.config import current_verified_user
+from src.teams.handlers import handle_get_all_teams, handle_add_team, handle_update_team, handle_delete_team, \
     handle_join_team, handle_get_team, handle_get_my_teams
 
 router = APIRouter(

@@ -3,11 +3,11 @@ from datetime import timedelta, datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.games.models import game
-from backend.src.auth.models import user
-from backend.src.scheduler.clr import send_email_notify
-from backend.src.scheduler.scheduler import scheduler
-from backend.src.scheduler.handlers import get_game_teams, get_team_players
+from src.games.models import game
+from src.auth.models import user
+from src.scheduler.clr import send_email_notify
+from src.scheduler.scheduler import scheduler
+from src.scheduler.handlers import get_game_teams, get_team_players
 
 
 async def get_game_info(

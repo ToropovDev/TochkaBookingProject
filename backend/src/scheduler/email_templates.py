@@ -5,8 +5,8 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from backend.src.base_config import SMTP_USER
-from backend.src.games.calendar import create_icalendar_file
+from src.base_config import SMTP_USER
+from src.games.calendar import create_icalendar_file
 
 
 def get_email_template_verify(

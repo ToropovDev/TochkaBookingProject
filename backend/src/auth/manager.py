@@ -2,10 +2,10 @@ from typing import Optional
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, models, schemas
 
-from backend.src.base_config import USER_MANAGER_SECRET
-from backend.src.auth.models import User
-from backend.src.auth.utils import get_user_db
-from backend.src.scheduler.clr import send_email_verify
+from src.base_config import USER_MANAGER_SECRET
+from src.auth.models import User
+from src.auth.utils import get_user_db
+from src.scheduler.clr import send_email_verify
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):

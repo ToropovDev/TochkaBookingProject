@@ -4,8 +4,8 @@ import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 from yookassa import Configuration, Payment
 
-from backend.src.base_config import YOOKASSA_ACCOUNT_ID, YOOKASSA_SECRET_KEY
-from backend.src.payments.handlers import add_payment_to_db, update_payment
+from src.base_config import YOOKASSA_ACCOUNT_ID, YOOKASSA_SECRET_KEY
+from src.payments.handlers import add_payment_to_db, update_payment
 
 Configuration.account_id = YOOKASSA_ACCOUNT_ID
 Configuration.secret_key = YOOKASSA_SECRET_KEY

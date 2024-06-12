@@ -3,8 +3,8 @@ from smtplib import SMTP_SSL
 
 from celery import Celery
 
-from backend.src.base_config import CELERY_BROKER_URL, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
-from backend.src.scheduler.email_templates import get_email_template_verify, get_email_template_notify, get_email_template_ics
+from src.base_config import CELERY_BROKER_URL, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
+from src.scheduler.email_templates import get_email_template_verify, get_email_template_notify, get_email_template_ics
 
 celery_app = Celery("auth", broker_url=CELERY_BROKER_URL)
 

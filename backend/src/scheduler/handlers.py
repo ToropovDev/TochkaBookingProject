@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.games.models import game
-from backend.src.teams.models import team
+from src.games.models import game
+from src.teams.models import team
 
 
 async def get_game_teams(

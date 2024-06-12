@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.payments.models import payment
+from src.payments.models import payment
 
 
 async def add_payment_to_db(

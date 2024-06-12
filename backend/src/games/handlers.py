@@ -1,10 +1,10 @@
 from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.auth.models import user
-from backend.src.games.models import game
-from backend.src.games.schemas import GameCreate
-from backend.src.teams.models import empty_team_dict, team
+from src.auth.models import user
+from src.games.models import game
+from src.games.schemas import GameCreate
+from src.teams.models import empty_team_dict, team
 
 
 async def get_game_by_id(session: AsyncSession, game_id: int) -> dict:

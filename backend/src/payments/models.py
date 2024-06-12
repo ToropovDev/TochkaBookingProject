@@ -1,7 +1,7 @@
 from sqlalchemy import MetaData, Integer, String, TIMESTAMP, ForeignKey, Table, Column
 
-from backend.src.auth.models import user
-from backend.src.games.models import game
+from src.auth.models import user
+from src.games.models import game
 
 metadata = MetaData()
 

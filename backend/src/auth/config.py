@@ -1,14 +1,13 @@
 from fastapi_users.authentication import CookieTransport, JWTStrategy, AuthenticationBackend
 from fastapi_users import FastAPIUsers
-from typing import Generic
 
-from fastapi import Response, status
+from fastapi import Response
 
 from fastapi_users import models
 from fastapi_users.authentication.strategy import Strategy
-from backend.src.auth.models import User
-from backend.src.auth.manager import get_user_manager
-from backend.src.base_config import JWT_SECRET
+from src.auth.models import User
+from src.auth.manager import get_user_manager
+from src.base_config import JWT_SECRET
 
 
 class Transport(CookieTransport):

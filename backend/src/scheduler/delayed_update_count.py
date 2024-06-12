@@ -1,10 +1,9 @@
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.auth.models import user
-from backend.src.games.schemas import GameCreate
-from backend.src.scheduler.handlers import get_game_teams, get_team_players
-from backend.src.scheduler.scheduler import scheduler
+from src.auth.models import user
+from src.scheduler.handlers import get_game_teams, get_team_players
+from src.scheduler.scheduler import scheduler
 
 
 async def update_player_games_played(session: AsyncSession, player_id: int) -> None:

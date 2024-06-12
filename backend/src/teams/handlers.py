@@ -2,11 +2,11 @@ from fastapi import Depends
 from sqlalchemy import select, update, insert, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.auth.models import User
-from backend.src.database import get_async_session
-from backend.src.games.models import game
-from backend.src.teams.models import team
-from backend.src.teams.schemas import TeamCreate
+from src.auth.models import User
+from src.database import get_async_session
+from src.games.models import game
+from src.teams.models import team
+from src.teams.schemas import TeamCreate
 
 
 def get_position_name(position_id: int) -> str:

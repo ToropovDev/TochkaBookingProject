@@ -5,15 +5,15 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.auth.config import auth_backend
-from backend.src.auth.models import User, user
-from backend.src.auth.schemas import UserRead, UserCreate, UserUpdate
-from backend.src.auth.manager import get_user_manager
-from backend.src.database import get_async_session
-from backend.src.scheduler.scheduler import scheduler
-from backend.src.teams.router import router as teams_router
-from backend.src.games.router import router as games_router
-from backend.src.fill_default import router as fill_default_router
+from src.auth.config import auth_backend
+from src.auth.models import User, user
+from src.auth.schemas import UserRead, UserCreate, UserUpdate
+from src.auth.manager import get_user_manager
+from src.database import get_async_session
+from src.scheduler.scheduler import scheduler
+from src.teams.router import router as teams_router
+from src.games.router import router as games_router
+from src.fill_default import router as fill_default_router
 
 app = FastAPI(
     title="Запись на игру",

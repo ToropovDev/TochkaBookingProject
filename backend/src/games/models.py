@@ -1,7 +1,7 @@
 from sqlalchemy import MetaData, Integer, String, TIMESTAMP, ForeignKey, Table, Column
 
-from backend.src.auth.models import user
-from backend.src.teams.models import team
+from src.auth.models import user
+from src.teams.models import team
 
 metadata = MetaData()
 

@@ -2,16 +2,16 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.auth.config import current_verified_user
-from backend.src.auth.models import User
-from backend.src.database import get_async_session
-from backend.src.games.handlers import get_game_by_id, add_game_to_team, increment_games_organized
-from backend.src.games.models import game
-from backend.src.games.schemas import GameCreate
-from backend.src.payments.payments import create_payment, check_payment
-from backend.src.scheduler.delayed_update_count import add_game_to_scheduler
-from backend.src.scheduler.notification import add_notification
-from backend.src.scheduler.clr import send_ics_file
+from src.auth.config import current_verified_user
+from src.auth.models import User
+from src.database import get_async_session
+from src.games.handlers import get_game_by_id, add_game_to_team, increment_games_organized
+from src.games.models import game
+from src.games.schemas import GameCreate
+from src.payments.payments import create_payment, check_payment
+from src.scheduler.delayed_update_count import add_game_to_scheduler
+from src.scheduler.notification import add_notification
+from src.scheduler.clr import send_ics_file
 
 router = APIRouter(
     prefix="/games",
