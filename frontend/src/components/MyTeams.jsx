@@ -4,6 +4,7 @@ import axios from 'axios';
 import {HomeOutlined, LogoutOutlined, RightCircleOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
 import {Link, useNavigate} from "react-router-dom";
 import EditTeamModal from './EditTeamModal';
+import UrlAddr from "../Url/UrlAddr.js";
 
 const {Content, Footer, Sider} = Layout;
 
@@ -24,7 +25,7 @@ const MyTeams = () => {
     useEffect(() => {
         const fetchTeams = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/teams/my/', {
+                const response = await axios.get(UrlAddr + '/teams/my/', {
                     withCredentials: true
                 });
                 setTeams(response.data.data);
@@ -40,7 +41,7 @@ const MyTeams = () => {
 
     const handleLogout = async () => {
         try {
-            await axios.post('http://localhost:8000/auth/logout', {}, {withCredentials: true});
+            await axios.post(UrlAddr + '/auth/logout', {}, {withCredentials: true});
             message.success('Вы успешно вышли из системы');
             navigate('/');
         } catch (error) {
@@ -65,7 +66,7 @@ const MyTeams = () => {
 
     const handleCreateTeam = async (values) => {
         try {
-            await axios.post('http://localhost:8000/teams/', values, {
+            await axios.post(UrlAddr + '/teams/', values, {
                 withCredentials: true,
             });
             message.success('Команда успешно создана');
@@ -78,7 +79,7 @@ const MyTeams = () => {
 
     const handleDelete = async (team) => {
         try {
-            await axios.delete(`http://localhost:8000/teams/${team.id}`, {
+            await axios.delete(UrlAddr + `/teams/${team.id}`, {
                 withCredentials: true,
             });
         } catch (error) {

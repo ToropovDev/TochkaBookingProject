@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Card, DatePicker, Form, Input, message, Modal, Select, Space} from 'antd';
 import axios from 'axios';
 import GameDetailsModal from './GameDetailsModal';
+import UrlAddr from "../Url/UrlAddr.js";
 
 const {Option} = Select;
 
@@ -36,7 +37,7 @@ const GamesList = () => {
     useEffect(() => {
         const fetchGames = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/games');
+                const response = await axios.get(UrlAddr + '/games/');
                 setGames(response.data.data);
             } catch (error) {
                 message.error('Failed to fetch games');
@@ -46,7 +47,7 @@ const GamesList = () => {
 
         const fetchTeams = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/teams');
+                const response = await axios.get(UrlAddr + '/teams/');
                 setTeams(response.data.data);
             } catch (error) {
                 message.error('Failed to fetch teams');
@@ -60,7 +61,7 @@ const GamesList = () => {
 
     const fetchTeam = async (teamId) => {
         try {
-            const response = await axios.get(`http://localhost:8000/teams/${teamId}/`, {
+            const response = await axios.get(UrlAddr + `/teams/${teamId}/`, {
                 headers: {
                     "accept": "application/json",
                 },
@@ -75,7 +76,7 @@ const GamesList = () => {
 
     const fetchUser = async (userId) => {
         try {
-            const response = await axios.get(`http://localhost:8000/user/${userId}/`, {
+            const response = await axios.get(UrlAddr + `/user/${userId}/`, {
                 headers: {
                     "accept": "application/json",
                 },
@@ -90,7 +91,7 @@ const GamesList = () => {
 
     const openModal = async (gameId) => {
         try {
-            const response = await axios.get(`http://localhost:8000/games/${gameId}/`, {
+            const response = await axios.get(UrlAddr + `/games/${gameId}/`, {
                 headers: {
                     "accept": "application/json",
                 },
@@ -154,7 +155,7 @@ const GamesList = () => {
         });
 
         try {
-            const add_response = await axios.post(`http://localhost:8000/games/?${params.toString()}`, {}, {
+            const add_response = await axios.post(UrlAddr + `/games/?${params.toString()}`, {}, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded", // Установим правильный заголовок Content-Type
                 },
@@ -163,7 +164,7 @@ const GamesList = () => {
             message.success('Игра успешно добавлена');
             setAddGameModalVisible(false);
             // Обновим список игр
-            const response = await axios.get('http://localhost:8000/games');
+            const response = await axios.get(UrlAddr + '/games');
             setGames(response.data.data);
 
             if (values.amount !== 0) {

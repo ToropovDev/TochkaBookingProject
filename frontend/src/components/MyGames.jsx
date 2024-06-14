@@ -4,6 +4,7 @@ import axios from 'axios';
 import {HomeOutlined, LogoutOutlined, RightCircleOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
 import {Link, useNavigate} from "react-router-dom";
 import GameDetailsModal from "./GameDetailsModal.jsx";
+import UrlAddr from "../Url/UrlAddr.js";
 
 const {Content, Footer, Sider} = Layout;
 const {Option} = Select;
@@ -42,7 +43,7 @@ const MyGames = () => {
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
-            await axios.post('http://localhost:8000/auth/logout', {}, {withCredentials: true});
+            await axios.post(UrlAddr + '/auth/logout', {}, {withCredentials: true});
             message.success('Вы успешно вышли из системы');
             navigate('/');
         } catch (error) {
@@ -57,7 +58,7 @@ const MyGames = () => {
 
     const fetchMyGames = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/games/my/', {
+            const response = await axios.get(UrlAddr + '/games/my/', {
                 withCredentials: true,
             });
             setGames(response.data.data);
@@ -72,7 +73,7 @@ const MyGames = () => {
 
         const fetchTeams = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/teams');
+                const response = await axios.get(UrlAddr + '/teams');
                 setTeams(response.data.data);
             } catch (error) {
                 message.error('Failed to fetch teams');
@@ -86,7 +87,7 @@ const MyGames = () => {
 
     const fetchTeam = async (teamId) => {
         try {
-            const response = await axios.get(`http://localhost:8000/teams/${teamId}/`, {
+            const response = await axios.get(UrlAddr + `/teams/${teamId}/`, {
                 headers: {
                     "accept": "application/json",
                 },
@@ -101,7 +102,7 @@ const MyGames = () => {
 
     const fetchUser = async (userId) => {
         try {
-            const response = await axios.get(`http://localhost:8000/user/${userId}/`, {
+            const response = await axios.get(UrlAddr + `/user/${userId}/`, {
                 headers: {
                     "accept": "application/json",
                 },
@@ -116,7 +117,7 @@ const MyGames = () => {
 
     const openModal = async (gameId) => {
         try {
-            const response = await axios.get(`http://localhost:8000/games/${gameId}/`, {
+            const response = await axios.get(UrlAddr + `/games/${gameId}/`, {
                 headers: {
                     "accept": "application/json",
                 },
@@ -193,7 +194,7 @@ const MyGames = () => {
             amount: values.amount ? values.amount : 0,
         });
         try {
-            await axios.patch(`http://localhost:8000/games/${game_to_edit}/?${params.toString()}`, {}, {
+            await axios.patch(UrlAddr + `/games/${game_to_edit}/?${params.toString()}`, {}, {
                 headers: {
                     "accept": "application/json",
                 },
@@ -221,7 +222,7 @@ const MyGames = () => {
         });
 
         try {
-            const add_response = await axios.post(`http://localhost:8000/games/?${params.toString()}`, {}, {
+            const add_response = await axios.post(UrlAddr + `/games/?${params.toString()}`, {}, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded", // Установим правильный заголовок Content-Type
                 },
@@ -230,7 +231,7 @@ const MyGames = () => {
             message.success('Игра успешно добавлена');
             setAddGameModalVisible(false);
             // Обновим список игр
-            const response = await axios.get('http://localhost:8000/games');
+            const response = await axios.get(UrlAddr + '/games');
             setGames(response.data.data);
 
             if (values.amount !== 0) {
@@ -244,7 +245,7 @@ const MyGames = () => {
 
     const handleDelete = async (gameId) => {
         try {
-            await axios.delete(`http://localhost:8000/games/${gameId}`, {
+            await axios.delete(UrlAddr + `/games/${gameId}`, {
                 withCredentials: true,
             });
             message.success('Игра успешно удалена');

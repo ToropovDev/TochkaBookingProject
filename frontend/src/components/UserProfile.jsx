@@ -3,6 +3,7 @@ import axios from 'axios';
 import {Link, useNavigate, useParams} from 'react-router-dom';
 import {Descriptions, Layout, Menu, message, Spin, theme} from 'antd';
 import {HomeOutlined, LogoutOutlined, RightCircleOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
+import UrlAddr from "../Url/UrlAddr.js";
 
 const {Content, Footer, Sider} = Layout;
 
@@ -18,7 +19,7 @@ const UserProfile = () => {
 
     const handleLogout = async () => {
         try {
-            await axios.post('http://localhost:8000/auth/logout', {}, {withCredentials: true});
+            await axios.post(UrlAddr + '/auth/logout', {}, {withCredentials: true});
             message.success('Вы успешно вышли из системы');
             navigate('/');
         } catch (error) {
@@ -30,7 +31,7 @@ const UserProfile = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/user/${userId}`, {
+                const response = await axios.get(UrlAddr + `/user/${userId}`, {
                     headers: {
                         "accept": "application/json",
                     },

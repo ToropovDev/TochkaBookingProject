@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Button, Form, Input, message} from 'antd';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import UrlAddr from "../Url/UrlAddr.js";
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
@@ -37,7 +38,7 @@ const Login = () => {
             };
 
         try {
-            const response = await axios.post(`http://localhost:8000${endpoint}`, data, {
+            const response = await axios.post(UrlAddr + `${endpoint}`, data, {
                 headers: {
                     'accept': 'application/json',
                     'Content-Type': isLogin ? 'application/x-www-form-urlencoded' : 'application/json',
@@ -46,7 +47,7 @@ const Login = () => {
             });
 
             if (!isLogin) {
-                await axios.post('http://localhost:8000/auth/request-verify-token', {
+                await axios.post(UrlAddr + '/auth/request-verify-token', {
                     email,
                 }, {
                     headers: {

@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {Button, Form, Input, message, Modal} from 'antd';
 import axios from 'axios';
+import UrlAddr from "../Url/UrlAddr.js";
 
 // eslint-disable-next-line react/prop-types
 const EditTeamModal = ({visible, team, onClose}) => {
@@ -23,7 +24,7 @@ const EditTeamModal = ({visible, team, onClose}) => {
     const handleSubmit = async (values) => {
         try {
             // eslint-disable-next-line react/prop-types
-            await axios.patch(`http://localhost:8000/teams/${team.id}`, values, {
+            await axios.patch(UrlAddr + `/teams/${team.id}`, values, {
                 withCredentials: true,
             });
             message.success('Команда успешно обновлена');

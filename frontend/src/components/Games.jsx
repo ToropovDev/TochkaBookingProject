@@ -4,6 +4,7 @@ import {Layout, Menu, message, theme} from 'antd';
 import GamesList from "./GamesList.jsx";
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
+import UrlAddr from "../Url/UrlAddr.js";
 
 
 const {Content, Footer, Sider} = Layout;
@@ -17,7 +18,7 @@ const Games = () => {
 
     const handleLogout = async () => {
         try {
-            await axios.post('http://localhost:8000/auth/logout', {}, {withCredentials: true});
+            await axios.post(UrlAddr + '/auth/logout', {}, {withCredentials: true});
             message.success('Вы успешно вышли из системы');
             navigate('/');
         } catch (error) {

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Button, Form, Input, message} from 'antd';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import UrlAddr from "../Url/UrlAddr.js";
 
 const InputToken = () => {
     const navigate = useNavigate();
@@ -10,7 +11,7 @@ const InputToken = () => {
         const {token} = values;
 
         try {
-            const response = await axios.post('http://localhost:8000/auth/verify', {token}, {
+            const response = await axios.post(UrlAddr + '/auth/verify', {token}, {
                 headers: {
                     'accept': 'application/json',
                     'Content-Type': 'application/json',

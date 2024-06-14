@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Button, Form, message, Modal, Select} from 'antd';
 import axios from 'axios';
+import UrlAddr from "../Url/UrlAddr.js";
 
 const {Option} = Select;
 
@@ -44,7 +45,7 @@ const GameDetailsModal = ({visible, game, team1, team2, user1, user2, onClose}) 
 
     const handleFormSubmit = async () => {
         try {
-            await axios.post(`http://localhost:8000/teams/join/${selectedTeamId}?position=${selectedPosition}`, {}, {
+            await axios.post(UrlAddr + `/teams/join/${selectedTeamId}?position=${selectedPosition}`, {}, {
                 withCredentials: true
             });
             message.success('Вы успешно записались в команду!');
