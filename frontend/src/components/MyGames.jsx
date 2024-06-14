@@ -73,7 +73,7 @@ const MyGames = () => {
 
         const fetchTeams = async () => {
             try {
-                const response = await axios.get(UrlAddr + '/teams');
+                const response = await axios.get(UrlAddr + '/teams/');
                 setTeams(response.data.data);
             } catch (error) {
                 message.error('Failed to fetch teams');

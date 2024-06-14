@@ -61,7 +61,7 @@ const GamesList = () => {
 
     const fetchTeam = async (teamId) => {
         try {
-            const response = await axios.get(UrlAddr + `/teams/${teamId}/`, {
+            const response = await axios.get(UrlAddr + `/teams/${teamId}`, {
                 headers: {
                     "accept": "application/json",
                 },
@@ -76,7 +76,7 @@ const GamesList = () => {
 
     const fetchUser = async (userId) => {
         try {
-            const response = await axios.get(UrlAddr + `/user/${userId}/`, {
+            const response = await axios.get(UrlAddr + `/user/${userId}`, {
                 headers: {
                     "accept": "application/json",
                 },
@@ -91,7 +91,7 @@ const GamesList = () => {
 
     const openModal = async (gameId) => {
         try {
-            const response = await axios.get(UrlAddr + `/games/${gameId}/`, {
+            const response = await axios.get(UrlAddr + `/games/${gameId}`, {
                 headers: {
                     "accept": "application/json",
                 },
