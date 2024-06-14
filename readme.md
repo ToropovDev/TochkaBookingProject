@@ -5,6 +5,7 @@
 - Python
 - FastAPI
 - PostgreSQL
+- alembic
 - Redis
 - celery
 - fastapi-users
