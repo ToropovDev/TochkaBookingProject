@@ -62,10 +62,5 @@ services:
       - ./nginx/dev.nginx.conf:/etc/nginx/nginx.conf:ro
     restart: unless-stopped
 
-networks:
-  default:
-    external: true
-    name: pohui
-
 volumes:
   db-data:

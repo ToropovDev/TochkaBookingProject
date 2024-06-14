@@ -32,8 +32,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*" ],
-    allow_headers=["*" ],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 fastapi_users = FastAPIUsers[User, UUID](
     get_user_manager,
