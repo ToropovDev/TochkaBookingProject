@@ -43,7 +43,7 @@ const MyGames = () => {
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
-            await axios.post(UrlAddr + '/auth/logout', {}, {withCredentials: true});
+            await axios.post(UrlAddr + '/auth/logout/', {}, {withCredentials: true});
             message.success('Вы успешно вышли из системы');
             navigate('/');
         } catch (error) {
@@ -231,7 +231,7 @@ const MyGames = () => {
             message.success('Игра успешно добавлена');
             setAddGameModalVisible(false);
             // Обновим список игр
-            const response = await axios.get(UrlAddr + '/games');
+            const response = await axios.get(UrlAddr + '/games/');
             setGames(response.data.data);
 
             if (values.amount !== 0) {

@@ -82,7 +82,7 @@ const Profile = () => {
             message.success('Profile updated successfully');
             setEditModalVisible(false);
             // Refresh user data
-            const response = await axios.get(UrlAddr + '/users/me', {
+            const response = await axios.get(UrlAddr + '/users/me/', {
                 headers: {
                     "accept": "application/json",
                 },
