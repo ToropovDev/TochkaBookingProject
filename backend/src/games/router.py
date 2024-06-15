@@ -13,6 +13,8 @@ from src.scheduler.delayed_update_count import add_game_to_scheduler
 from src.scheduler.notification import add_notification
 from src.scheduler.clr import send_ics_file
 
+from src.payments.models import payment
+
 router = APIRouter(
     prefix="/games",
     tags=["games"],
@@ -217,6 +219,7 @@ async def delete_game(
         current_game = await get_game_by_id(session, game_id)
         if current_game['creator'] != user.id:
             raise Exception("You are not the creator of this game")
+        stmt = delete(payment).where(payment.c.game_id  == game_id)
         stmt = delete(game).where(game.c.id == game_id)
         await session.execute(stmt)
         await session.commit()

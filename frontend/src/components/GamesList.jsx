@@ -157,14 +157,13 @@ const GamesList = () => {
         try {
             const add_response = await axios.post(UrlAddr + `/games/?${params.toString()}`, {}, {
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded", // Установим правильный заголовок Content-Type
+                    "Content-Type": "application/x-www-form-urlencoded",
                 },
                 withCredentials: true,
             });
             message.success('Игра успешно добавлена');
             setAddGameModalVisible(false);
-            // Обновим список игр
-            const response = await axios.get(UrlAddr + '/games');
+            const response = await axios.get(UrlAddr + '/games/');
             setGames(response.data.data);
 
             if (values.amount !== 0) {
