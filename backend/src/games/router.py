@@ -219,7 +219,9 @@ async def delete_game(
         current_game = await get_game_by_id(session, game_id)
         if current_game['creator'] != user.id:
             raise Exception("You are not the creator of this game")
-        stmt = delete(payment).where(payment.c.game_id  == game_id)
+        stmt = delete(payment).where(payment.c.game_id == game_id)
+        await session.execute(stmt)
+        await session.commit()
         stmt = delete(game).where(game.c.id == game_id)
         await session.execute(stmt)
         await session.commit()
