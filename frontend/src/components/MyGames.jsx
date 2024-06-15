@@ -43,7 +43,7 @@ const MyGames = () => {
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
-            await axios.post(UrlAddr + '/auth/logout/', {}, {withCredentials: true});
+            await axios.post(UrlAddr + '/auth/logout', {}, {withCredentials: true});
             message.success('Вы успешно вышли из системы');
             navigate('/');
         } catch (error) {
