@@ -18,15 +18,10 @@ from src.fill_default import router as fill_default_router
 app = FastAPI(
     title="Запись на игру",
     version="0.1",
-
 )
 
 
-origins = [
-    "http://localhost",
-    "http://127.0.0.1",
-    "http://0.0.0.0"
-]
+origins = ["http://localhost:3000", "http://127.0.0.1:3000", "http://0.0.0.0:3000"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -75,16 +70,15 @@ async def get_user(user_id: int, session: AsyncSession = Depends(get_async_sessi
     try:
         query = select(user).where(user.c.id == user_id)
         result = await session.execute(query)
-        this_user  = dict(result.mappings().one())
+        this_user = dict(result.mappings().one())
         return {
             "status": "success",
             "data": this_user,
-            "details":  None,
+            "details": None,
         }
     except Exception as e:
-        return {"status": "error",
-                "data": None,
-                "details": str(e)}
+        return {"status": "error", "data": None, "details": str(e)}
+
 
 app.include_router(teams_router)
 app.include_router(games_router)
@@ -95,4 +89,3 @@ app.include_router(fill_default_router)
 async def startup():
     scheduler.start()
     print("Scheduler started")
-

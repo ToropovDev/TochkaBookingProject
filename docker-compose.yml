@@ -1,5 +1,23 @@
 version: '3'
+
 services:
+  db:
+    image: "postgres:14.5"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "booking"
+      POSTGRES_USER: "booking"
+      POSTGRES_PASSWORD: "booking"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: "redis:7-alpine"
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+
   backend:
     build:
       context: .
@@ -8,6 +26,16 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=booking
+      - DB_USER=booking
+      - DB_PASS=booking
+      - CELERY_BROKER_URL=redis://redis:6379/0
 
   frontend:
     build:
@@ -17,6 +45,8 @@ services:
         - --no-cache=true
     ports:
       - "3000:3000"
+    depends_on:
+      - backend
 
   celery:
     build:
@@ -29,12 +59,16 @@ services:
     command: celery -A src.scheduler.clr:celery_app worker --loglevel=info
     env_file:
       - .env
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=booking
+      - DB_USER=booking
+      - DB_PASS=booking
+      - CELERY_BROKER_URL=redis://redis:6379/0
 
-  nginx:
-    image: nginx:1.24.0
-    ports:
-      - "443:443"
-    volumes:
-      - ./nginx/dev.nginx.conf:/etc/nginx/nginx.conf:ro
-      - /ssl:/ssl:ro
-    restart: unless-stopped
+volumes:
+  postgres_data:

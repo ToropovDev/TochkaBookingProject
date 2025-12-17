@@ -12,14 +12,16 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     reset_password_token_secret = USER_MANAGER_SECRET
     verification_token_secret = USER_MANAGER_SECRET
 
-    async def on_after_register(self, user: User, request: Optional[Request] = None) -> None:
+    async def on_after_register(
+        self, user: User, request: Optional[Request] = None
+    ) -> None:
         print(f"User {user.id} has registered.")
 
     async def create(
-            self,
-            user_create: schemas.UC,
-            safe: bool = False,
-            request: Optional[Request] = None,
+        self,
+        user_create: schemas.UC,
+        safe: bool = False,
+        request: Optional[Request] = None,
     ) -> models.UP:
         await self.validate_password(user_create.password, user_create)
 
@@ -34,7 +36,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         )
         password = user_dict.pop("password")
         user_dict["hashed_password"] = self.password_helper.hash(password)
-        user_dict['role_id'] = 1
+        user_dict["role_id"] = 1
 
         created_user = await self.user_db.create(user_dict)
 
@@ -43,21 +45,19 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         return created_user
 
     async def on_after_request_verify(
-            self,
-            user: User,
-            token: str,
-            request: Optional[Request] = None
+        self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
-        send_email_verify.delay(user.username, user.email, token, "Подтверждение аккаунта")
+        send_email_verify.delay(
+            user.username, user.email, token, "Подтверждение аккаунта"
+        )
         print(f"Verification requested for user {user.id}. Verification token: {token}")
 
     async def on_after_forgot_password(
-            self,
-            user: User,
-            token: str,
-            request: Optional[Request] = None
+        self, user: User, token: str, request: Optional[Request] = None
     ) -> None:
-        send_email_verify.delay(user.username, user.email, token, "Восстановление пароля")
+        send_email_verify.delay(
+            user.username, user.email, token, "Восстановление пароля"
+        )
         print(f"User {user.id} has forgot their password. Reset token: {token}")
 
 

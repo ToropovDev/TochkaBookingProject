@@ -1,4 +1,4 @@
 
-const UrlAddr = 'https://www.toropovdev.ru/api';
+const UrlAddr = 'http://localhost:8000';
 
 export default UrlAddr;

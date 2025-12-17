@@ -12,24 +12,24 @@ Configuration.secret_key = YOOKASSA_SECRET_KEY
 
 
 async def create_payment(
-        amount: float,
-        description: str,
-        user_id: int,
-        game_id: int,
-        session: AsyncSession,
+    amount: float,
+    description: str,
+    user_id: int,
+    game_id: int,
+    session: AsyncSession,
 ) -> dict:
-    payment = Payment.create({
-        "amount": {
-            "value": str(amount),
-            "currency": "RUB"
+    payment = Payment.create(
+        {
+            "amount": {"value": str(amount), "currency": "RUB"},
+            "confirmation": {
+                "type": "redirect",
+                "return_url": "127.0.0.1",
+            },
+            "capture": True,
+            "description": description,
         },
-        "confirmation": {
-            "type": "redirect",
-            "return_url": "127.0.0.1",
-        },
-        "capture": True,
-        "description": description,
-    }, uuid.uuid4())
+        uuid.uuid4(),
+    )
     print(1)
     created_payment_data = (await check_payment(payment.id, session))[1]
     await add_payment_to_db(created_payment_data, user_id, game_id, session)

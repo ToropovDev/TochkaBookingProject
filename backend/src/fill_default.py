@@ -41,7 +41,9 @@ async def fill_table(table: Table, table_data: list, session: AsyncSession) -> N
 
 @router.post("/")
 async def fill_default_data(session: AsyncSession = Depends(get_async_session)) -> None:
-    role_is_empty, game_status_is_empty, game_level_is_empty = await check_tables(session)
+    role_is_empty, game_status_is_empty, game_level_is_empty = await check_tables(
+        session
+    )
 
     default_data = get_default_data()
     role_data = default_data["role_data"]

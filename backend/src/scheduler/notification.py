@@ -10,19 +10,13 @@ from src.scheduler.scheduler import scheduler
 from src.scheduler.handlers import get_game_teams, get_team_players
 
 
-async def get_game_info(
-        game_id: int,
-        session: AsyncSession
-) -> dict:
+async def get_game_info(game_id: int, session: AsyncSession) -> dict:
     query = select(game).where(game.c.id == game_id)
     result = dict((await session.execute(query)).mappings().one())
     return result
 
 
-async def get_user_info(
-        user_id: int,
-        session: AsyncSession
-) -> dict:
+async def get_user_info(user_id: int, session: AsyncSession) -> dict:
     query = select(user).where(user.c.id == user_id)
     result = dict((await session.execute(query)).mappings().one())
     return result
@@ -36,14 +30,13 @@ def delay_notification(
     game_place: str,
     game_datetime: datetime,
 ) -> None:
-    game_datetime = game_datetime.strftime('%d.%m.%Y %H:%M')
-    send_email_notify.delay(username, user_email, subject, game_name, game_place, game_datetime)
+    game_datetime = game_datetime.strftime("%d.%m.%Y %H:%M")
+    send_email_notify.delay(
+        username, user_email, subject, game_name, game_place, game_datetime
+    )
 
 
-async def add_notification(
-        game_id: int,
-        session: AsyncSession
-):
+async def add_notification(game_id: int, session: AsyncSession):
     game_info = await get_game_info(game_id, session)
     team_1_id, team_2_id = await get_game_teams(session, game_id)
     team_1_players = await get_team_players(session, team_1_id)
@@ -53,14 +46,14 @@ async def add_notification(
         player_info = await get_user_info(player, session)
         scheduler.add_job(
             delay_notification,
-            'date',
+            "date",
             args=[
-                player_info['username'],
-                player_info['email'],
+                player_info["username"],
+                player_info["email"],
                 "Напоминание о игре",
-                game_info['name'],
-                game_info['place'],
-                game_info['datetime'],
+                game_info["name"],
+                game_info["place"],
+                game_info["datetime"],
             ],
-            run_date=game_info['datetime'] - timedelta(hours=2),
+            run_date=game_info["datetime"] - timedelta(hours=2),
         )

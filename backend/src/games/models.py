@@ -6,7 +6,7 @@ from src.teams.models import team
 metadata = MetaData()
 
 game_status = Table(
-    'game_status',
+    "game_status",
     metadata,
     Column("code", Integer, primary_key=True),
     Column("name", String, nullable=False),

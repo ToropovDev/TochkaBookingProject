@@ -17,11 +17,13 @@ team = Table(
     Column("libero", Integer, ForeignKey(user.c.id), nullable=True, default=None),
 )
 
-empty_team_dict = {"creator": None,
-                   "opposite": None,
-                   "outside_1": None,
-                   "outside_2": None,
-                   "setter": None,
-                   "middle_1": None,
-                   "middle_2": None,
-                   "libero": None}
+empty_team_dict = {
+    "creator": None,
+    "opposite": None,
+    "outside_1": None,
+    "outside_2": None,
+    "setter": None,
+    "middle_1": None,
+    "middle_2": None,
+    "libero": None,
+}

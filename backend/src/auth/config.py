@@ -1,4 +1,8 @@
-from fastapi_users.authentication import CookieTransport, JWTStrategy, AuthenticationBackend
+from fastapi_users.authentication import (
+    CookieTransport,
+    JWTStrategy,
+    AuthenticationBackend,
+)
 from fastapi_users import FastAPIUsers
 
 from fastapi import Response
@@ -51,9 +55,7 @@ class Backend(AuthenticationBackend):
 
 
 auth_backend = Backend(
-    name="jwt",
-    transport=cookie_transport,
-    get_strategy=get_jwt_strategy
+    name="jwt", transport=cookie_transport, get_strategy=get_jwt_strategy
 )
 
 

@@ -8,7 +8,7 @@ metadata = MetaData()
 payment = Table(
     "payment",
     metadata,
-    Column('id', String, primary_key=True),
+    Column("id", String, primary_key=True),
     Column("status", String, nullable=False),
     Column("amount", String, nullable=False),
     Column("currency", String, nullable=False),
