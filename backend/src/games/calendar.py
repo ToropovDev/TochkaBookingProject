@@ -15,7 +15,7 @@ def create_icalendar_file(game_details) -> bytes:
     )  # Assume the game lasts 2 hours
     event.add("dtstamp", datetime.now(pytz.utc))
     event.add("location", game_details["place"])
-    event.add("description", f"descr")
+    event.add("description", "descr")
 
     cal.add_component(event)
     return cal.to_ical()

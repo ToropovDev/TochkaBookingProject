@@ -5,6 +5,7 @@ from fastapi_users import BaseUserManager, IntegerIDMixin, exceptions, models, s
 from src.base_config import USER_MANAGER_SECRET
 from src.auth.models import User
 from src.auth.utils import get_user_db
+from src.metrics import EMAIL_SENT
 from src.scheduler.clr import send_email_verify
 
 
@@ -50,6 +51,9 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         send_email_verify.delay(
             user.username, user.email, token, "Подтверждение аккаунта"
         )
+
+        EMAIL_SENT.labels(email_type="verify").inc()
+
         print(f"Verification requested for user {user.id}. Verification token: {token}")
 
     async def on_after_forgot_password(
@@ -58,6 +62,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         send_email_verify.delay(
             user.username, user.email, token, "Восстановление пароля"
         )
+        EMAIL_SENT.labels(email_type="verify").inc()
         print(f"User {user.id} has forgot their password. Reset token: {token}")
 
 

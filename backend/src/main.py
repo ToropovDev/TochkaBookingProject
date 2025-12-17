@@ -1,3 +1,6 @@
+import os
+
+import psutil
 from fastapi import FastAPI, Depends
 from fastapi_users import FastAPIUsers
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,6 +18,21 @@ from src.teams.router import router as teams_router
 from src.games.router import router as games_router
 from src.fill_default import router as fill_default_router
 
+import time
+
+from fastapi import Request
+
+from src.metrics import (
+    REQUESTS_TOTAL,
+    REQUESTS_ERRORS,
+    REQUESTS_DURATION,
+    CPU_PERCENT,
+    MEMORY_RSS,
+    MEMORY_PERCENT,
+)
+
+from fastapi import Response
+
 app = FastAPI(
     title="Запись на игру",
     version="0.1",
@@ -30,6 +48,52 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def prometheus_metrics_middleware(request: Request, call_next):
+    start_time = time.time()
+    try:
+        response = await call_next(request)
+        duration = time.time() - start_time
+        status = response.status_code
+        REQUESTS_TOTAL.labels(
+            method=request.method,
+            endpoint=request.url.path,
+            status=status,
+        ).inc()
+
+        if status >= 400:
+            REQUESTS_ERRORS.labels(
+                method=request.method,
+                endpoint=request.url.path,
+                status=status,
+            ).inc()
+
+        REQUESTS_DURATION.labels(
+            method=request.method,
+            endpoint=request.url.path,
+        ).set(duration)
+
+        return response
+
+    except Exception:
+        duration = time.time() - start_time
+        REQUESTS_TOTAL.labels(
+            method=request.method,
+            endpoint=request.url.path,
+            status=500,
+        ).inc()
+        REQUESTS_ERRORS.labels(
+            method=request.method,
+            endpoint=request.url.path,
+            status=500,
+        ).inc()
+        REQUESTS_DURATION.labels(method=request.method, endpoint=request.url.path).set(
+            duration
+        )
+
+
 fastapi_users = FastAPIUsers[User, UUID](
     get_user_manager,
     [auth_backend],
@@ -78,6 +142,20 @@ async def get_user(user_id: int, session: AsyncSession = Depends(get_async_sessi
         }
     except Exception as e:
         return {"status": "error", "data": None, "details": str(e)}
+
+
+current_process = psutil.Process(os.getpid())
+
+
+@app.get("/metrics")
+def metrics():
+    CPU_PERCENT.set(current_process.cpu_percent())
+    MEMORY_RSS.set(current_process.memory_info().rss)
+    MEMORY_PERCENT.set(current_process.memory_percent())
+
+    from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 app.include_router(teams_router)

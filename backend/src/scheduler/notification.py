@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.games.models import game
 from src.auth.models import user
+from src.metrics import EMAIL_SENT
 from src.scheduler.clr import send_email_notify
 from src.scheduler.scheduler import scheduler
 from src.scheduler.handlers import get_game_teams, get_team_players
@@ -32,8 +33,14 @@ def delay_notification(
 ) -> None:
     game_datetime = game_datetime.strftime("%d.%m.%Y %H:%M")
     send_email_notify.delay(
-        username, user_email, subject, game_name, game_place, game_datetime
+        username,
+        user_email,
+        subject,
+        game_name,
+        game_place,
+        game_datetime,
     )
+    EMAIL_SENT.labels(email_type="notify").inc()
 
 
 async def add_notification(game_id: int, session: AsyncSession):

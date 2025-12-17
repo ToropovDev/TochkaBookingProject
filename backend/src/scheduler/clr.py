@@ -37,7 +37,12 @@ def send_email_notify(
     game_datetime: datetime,
 ) -> None:
     email = get_email_template_notify(
-        username, user_email, subject, game_name, game_place, game_datetime
+        username,
+        user_email,
+        subject,
+        game_name,
+        game_place,
+        game_datetime,
     )
     with SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
         server.login(SMTP_USER, SMTP_PASS)

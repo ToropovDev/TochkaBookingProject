@@ -12,6 +12,7 @@ from src.games.handlers import (
 )
 from src.games.models import game
 from src.games.schemas import GameCreate
+from src.metrics import EMAIL_SENT
 from src.payments.payments import create_payment, check_payment
 from src.scheduler.delayed_update_count import add_game_to_scheduler
 from src.scheduler.notification import add_notification
@@ -92,6 +93,8 @@ async def add_game(
             "Добавьте предстоящую игру в календарь",
             game_create,
         )
+
+        EMAIL_SENT.labels(email_type="ics").inc()
 
         payment = {}
         if game_create["amount"] != 0:
